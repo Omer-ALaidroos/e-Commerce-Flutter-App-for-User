@@ -1,12 +1,13 @@
-import 'package:e_commerce_app/core/styling/app_assets.dart';
 import 'package:e_commerce_app/core/styling/app_styles.dart';
 import 'package:e_commerce_app/core/widgets/spacing_widgets.dart';
+import 'package:e_commerce_app/features/Cart/models/cart_model.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CartItemWidget extends StatelessWidget {
-  const CartItemWidget({super.key});
+  final Product product;
+  const CartItemWidget({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +22,14 @@ class CartItemWidget extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset(  AppAssets.tShirt,
-              height: 86.h,
-              width: 82.w,
+            Container(
+              width: 83.w,
+              height: 79.h,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.r),
+                color: Colors.grey,
+              ),
             ),
-             WidthSpace(16),
             WidthSpace(16),
             Expanded(
               child: Column(
@@ -35,7 +39,7 @@ class CartItemWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "T Shirt",
+                        "Product Item ${product.productId}",
                         style: AppStyles.black15BoldStyle,
                       ),
                       Spacer(),

@@ -1,10 +1,14 @@
 
 import 'package:e_commerce_app/core/styling/app_colors.dart';
+import 'package:e_commerce_app/core/utils/service_locator.dart';
 import 'package:e_commerce_app/features/Cart/my_cart_screen.dart';
 import 'package:e_commerce_app/features/account/account_screen.dart';
+import 'package:e_commerce_app/features/home/cubit/categories_cubit.dart';
+import 'package:e_commerce_app/features/home/cubit/product_cubit.dart';
 import 'package:e_commerce_app/features/home/home_screen.dart';
+import 'package:e_commerce_app/features/auth/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MainScreen extends StatefulWidget {
@@ -18,9 +22,22 @@ class _MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
 
   List<Widget> screens = [
-    HomeScreen(),
+     MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => sl<ProductCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => sl<CategoriesCubit>(),
+        ),
+      ],
+      child: HomeScreen(),
+    ),
     MyCartScreen(),
-    AccountScreen(),
+    BlocProvider(
+      create: (context) => sl<AuthCubit>(),
+      child: const AccountScreen(),
+    ),
   ];
 
   @override

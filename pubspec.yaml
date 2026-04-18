@@ -40,6 +40,14 @@ dependencies:
   pretty_dio_logger: ^1.4.0
   pretty_bytes: ^6.3.0
   cached_network_image: ^3.4.1
+  lottie: ^3.3.3
+  dartz: ^0.10.1
+  animated_snack_bar: ^0.4.0
+  get_it: ^9.2.1
+  flutter_secure_storage: ^10.0.0
+  flutter_bloc: ^9.1.1
+  shimmer: ^3.0.0
+  flutter_staggered_animations: ^1.1.1
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +75,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/lottie/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

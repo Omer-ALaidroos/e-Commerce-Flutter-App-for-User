@@ -1,15 +1,22 @@
 import 'package:e_commerce_app/core/routing/app_routes.dart';
-import 'package:e_commerce_app/core/styling/app_assets.dart';
 import 'package:e_commerce_app/core/styling/app_colors.dart';
 import 'package:e_commerce_app/core/styling/app_styles.dart';
 import 'package:e_commerce_app/core/widgets/custom_text_field.dart';
 import 'package:e_commerce_app/core/widgets/spacing_widgets.dart';
-import 'package:e_commerce_app/features/home/widgets/custome_category_item.dart';
+import 'package:e_commerce_app/features/home/cubit/categories_cubit.dart';
+import 'package:e_commerce_app/features/home/cubit/categories_state.dart';
+import 'package:e_commerce_app/features/home/cubit/product_cubit.dart';
+import 'package:e_commerce_app/features/home/cubit/product_state.dart';
+import 'package:e_commerce_app/features/home/models/products_model.dart';
+import 'package:e_commerce_app/features/home/widgets/category_item_widget.dart';
 import 'package:e_commerce_app/features/home/widgets/product_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,106 +26,171 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String selectedCat = "All";
+  @override
+  void initState() {
+    context.read<ProductCubit>().fetchProducts();
+    context.read<CategoriesCubit>().fetchCategories();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-         
-          children: [
-           
-            Text("Dicover",
-            style: AppStyles.primaryHeadLinesStyle,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 24.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const HeightSpace(28),
+          SizedBox(
+            width: 335.w,
+            child: Text(
+              "Discover",
+              style: AppStyles.primaryHeadLinesStyle,
             ),
-           
-            HeightSpace( 10.h),
-            Row(
-              children: [
-                CustomTextField(
-                  hintText: "Search for clothes...",
-                  prefixIcon: Icon(Icons.search_rounded,),
-                  width: 250.w,
-                ),
-                WidthSpace(10.w),
-                Container(
-                  width: 65.w,
-                  height: 65.h,
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryColor,
-                    borderRadius: BorderRadius.circular(8.r)
-                  ),
-
-                  child: IconButton(
-                    onPressed: () {},
-                     icon: Icon(Icons.tune,
-                     color: AppColors.whiteColor,
-                     size: 25.sp,)),
-                )
-              ],
-            ),
-            HeightSpace( 20.h),
-            SizedBox(
-                        height: 40.h,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          physics: const BouncingScrollPhysics(),
-                          children: [
-                            CustomeCategoryItem(categoryName:  "All",
-                             onTap: () => GoRouter.of(context).pushNamed(AppRoutes.loginScreen, extra: "travel")
-                            ),
-                            CustomeCategoryItem(categoryName: "T-shirts",
-                            onTap: () => GoRouter.of(context).pushNamed(AppRoutes.loginScreen, extra: "technology")
-                            ),
-                            CustomeCategoryItem(categoryName: "jeans",
-                            onTap: () => GoRouter.of(context).pushNamed(AppRoutes.loginScreen, extra: "business")
-                            ),
-                            CustomeCategoryItem(categoryName: "shoes",
-                            onTap: () => GoRouter.of(context).pushNamed(AppRoutes.loginScreen, extra: "entertainment")
-                            ),
-                             CustomeCategoryItem(categoryName: "jackets",
-                            onTap: () => GoRouter.of(context).pushNamed(AppRoutes.loginScreen, extra: "entertainment")
-                            ),
-                          ],
-                        ),
-                      ),
-                      HeightSpace( 20.h),
- Expanded(
-            child: GridView(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 8.sp,
-                crossAxisSpacing: 16.sp,
-                childAspectRatio: 0.8,
+          ),
+          const HeightSpace(16),
+          Row(
+            children: [
+              CustomTextField(
+                width: 270.w,
+                hintText: "Search For Clothes",
               ),
-              children: [
-                ProductItemWidget(
-                  title: "Shoes",
-                  price: "1190 \$",
-                  onTap: () {
-                    GoRouter.of(context).pushNamed(AppRoutes.productDetailsScreen);
-                  },
+              const WidthSpace(8),
+              Container(
+                width: 56.w,
+                height: 56.h,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryColor,
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
-                ProductItemWidget(title: "Shoes", price: "1190 \$",imageUrl: AppAssets.tShirt,),
-                ProductItemWidget(title: "Shoes", price: "1190 \$"),
-                ProductItemWidget(title: "Shoes", price: "1190 \$",imageUrl: AppAssets.tShirt,),
-                ProductItemWidget(title: "Shoes", price: "1190 \$"),
-                ProductItemWidget(title: "Shoes", price: "1190 \$",imageUrl: AppAssets.tShirt,),
-                ProductItemWidget(title: "Shoes", price: "1190 \$"),
-                ProductItemWidget(title: "Shoes", price: "1190 \$",imageUrl: AppAssets.tShirt,),
-                ProductItemWidget(title: "Shoes", price: "1190 \$"),
-                ProductItemWidget(title: "Shoes", price: "1190 \$",imageUrl: AppAssets.tShirt,),
-              ],
-            ),
-          )
-                   
+                child: Icon(
+                  Icons.search,
+                  color: Colors.white,
+                ),
+              )
+            ],
+          ),
+          const HeightSpace(16),
+          BlocBuilder<CategoriesCubit, CategoriesState>(
+            builder: (context, state) {
+              if (state is CategoriesLoaded) {
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: state.categories.map((cat) {
+                      return CategoryItemWidget(
+                        categoryName: cat,
+                        isSelected: selectedCat == cat ? true : false,
+                        onPress: () {
+                          setState(() {
+                            selectedCat = cat;
 
-            
-          ],
-        ),
+                            if (selectedCat == "All") {
+                              context.read<ProductCubit>().fetchProducts();
+                            } else {
+                              context
+                                  .read<ProductCubit>()
+                                  .fetchProductCategories(cat);
+                            }
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ),
+                );
+              }
+
+              return SizedBox.shrink();
+            },
+          ),
+          const HeightSpace(16),
+          BlocBuilder<ProductCubit, ProductState>(
+            builder: (context, state) {
+              if (state is ProductLoading) {
+                return Expanded(
+                  child: Shimmer.fromColors(
+                    baseColor: Colors.grey[300]!,
+                    highlightColor: Colors.grey[100]!,
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 8.sp,
+                        crossAxisSpacing: 16.sp,
+                        childAspectRatio: 0.8,
+                      ),
+                      itemCount: 6,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: Colors.amber,
+                          ),
+                          width: 150.w,
+                          height: 120.h,
+                        );
+                      },
+                    ),
+                  ),
+                );
+              }
+              if (state is ProductLoaded) {
+                List<ProductsModel> products = state.products;
+
+                if (products.isEmpty) {
+                  return const Center(
+                    child: Text("No products found"),
+                  );
+                }
+                return Expanded(
+                  child: RefreshIndicator(
+                    color: AppColors.primaryColor,
+                    backgroundColor: Colors.white,
+                    onRefresh: () async {
+                      selectedCat = "All";
+                      setState(() {});
+                      context.read<ProductCubit>().fetchProducts();
+                    },
+                    child: AnimationLimiter(
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 8.sp,
+                          crossAxisSpacing: 16.sp,
+                          childAspectRatio: 0.65,
+                        ),
+                        itemCount: products.length,
+                        itemBuilder: (context, index) {
+                          return AnimationConfiguration.staggeredList(
+                            position: index,
+                            duration: const Duration(milliseconds: 500),
+                            child: SlideAnimation(
+                              verticalOffset: 200.0,
+                              child: FadeInAnimation(
+                                child: ProductItemWidget(
+                                  image: products[index].image ?? "",
+                                  title: products[index].title ?? "",
+                                  price: products[index].price.toString(),
+                                  onTap: () {
+                                    GoRouter.of(context).pushNamed(
+                                        AppRoutes.productDetailsScreen,
+                                        extra: products[index]);
+                                  },
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                );
+              }
+
+              return Text("there is an error");
+            },
+          )
+        ],
       ),
-    );  
+    );
   }
 }

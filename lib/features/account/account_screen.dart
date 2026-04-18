@@ -2,9 +2,12 @@
 import 'package:e_commerce_app/core/routing/app_routes.dart';
 import 'package:e_commerce_app/core/styling/app_assets.dart';
 import 'package:e_commerce_app/core/styling/app_styles.dart';
+import 'package:e_commerce_app/core/widgets/primay_button_widget.dart';
 import 'package:e_commerce_app/core/widgets/spacing_widgets.dart';
 import 'package:e_commerce_app/features/account/widgets/account_item_widget.dart';
+import 'package:e_commerce_app/features/auth/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
@@ -80,7 +83,9 @@ class AccountScreen extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                 showLogoutDialog(context);
+              },
               child: Row(
                 children: [
                   Icon(
@@ -104,3 +109,58 @@ class AccountScreen extends StatelessWidget {
     );
   }
 }
+
+  showLogoutDialog(BuildContext parentContext) {
+    showDialog(
+        context: parentContext,
+        builder: (context) {
+          return Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.r)),
+              child: SizedBox(
+                height: 400.h,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.warning_amber_outlined,
+                        color: Colors.redAccent,
+                        size: 50.sp,
+                      ),
+                      const HeightSpace(20),
+                      Text(
+                        "Logout",
+                        style: AppStyles.primaryHeadLinesStyle,
+                      ),
+                      const HeightSpace(8),
+                      Text(
+                        "Are you Sure You Want to Logout?",
+                        style: AppStyles.grey12MediumStyle,
+                      ),
+                      const HeightSpace(16),
+                      PrimayButtonWidget(
+                        buttonColor: Colors.redAccent,
+                        buttonText: "Yes Logout",
+                        onPress: () {
+                          parentContext.read<AuthCubit>().logout();
+                          parentContext
+                              .pushReplacementNamed(AppRoutes.loginScreen);
+                        },
+                      ),
+                      const HeightSpace(16),
+                      PrimayButtonWidget(
+                        buttonColor: Colors.grey,
+                        buttonText: "No Cancel",
+                        onPress: () {
+                          context.pop();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ));
+        });
+  }
+

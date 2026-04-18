@@ -1,20 +1,21 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce_app/core/styling/app_assets.dart';
 import 'package:e_commerce_app/core/styling/app_colors.dart';
 import 'package:e_commerce_app/core/styling/app_styles.dart';
+import 'package:e_commerce_app/core/utils/animated_snack_dialog.dart';
 import 'package:e_commerce_app/core/widgets/primay_button_widget.dart';
 import 'package:e_commerce_app/core/widgets/spacing_widgets.dart';
+import 'package:e_commerce_app/features/Cart/cubit/cart_cubit.dart';
+import 'package:e_commerce_app/features/Cart/cubit/cart_state.dart';
+import 'package:e_commerce_app/features/home/models/products_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
-  const ProductDetailsScreen({super.key, this.title, this.price, this.imageUrl, this.description, this.rating, this.reviewsCount});
-  final String? title;
-  final String? price;
-  final String? imageUrl;
-  final String? description;
-  final String? rating;
-  final String? reviewsCount;
+  const ProductDetailsScreen({super.key,required this.product});
+   final ProductsModel product;
 
   @override
   Widget build(BuildContext context) {
@@ -41,49 +42,52 @@ class ProductDetailsScreen extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-             
-            children: [
-             
-         
-              Image.asset(
-                AppAssets.tShirt,
-                 height: 365.h,
-                  width: 341.w,),
-              HeightSpace(  50.h),
-              Text(title?? "T-Shirt",
-                style: AppStyles.black18BoldStyle,
-              ),
-              HeightSpace(  10.h),
-              Row(
+            child: SingleChildScrollView(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Icon( Icons.star,
-                  color: Colors.amber,
-                  size: 20.sp,
-                  ),
-                  Text(rating?? "4.5  ",
-                    style: AppStyles.black15BoldStyle,
-                  ),
-                  Text("(${reviewsCount?? "120"}) Reviews",
-                    style: AppStyles.grey12MediumStyle,
-                  ), 
-                ]                   
-              ),
-              HeightSpace(  20.h),
-        
-              Text(description?? "T shirt for men, made of high quality cotton, comfortable to wear and stylish design.",
-                style: AppStyles.grey12MediumStyle,
-                textAlign: TextAlign.center,
-              ),
-               HeightSpace(  40.h), 
-             
+                crossAxisAlignment: CrossAxisAlignment.start,
                
-              
-            ],
-          ),
+              children: [
+               
+                       
+               CachedNetworkImage(imageUrl: product.image ?? "",
+               width: double.infinity,
+               height: 300.h,
+               fit: BoxFit.cover,
+               ),
+                HeightSpace(  50.h),
+                Text(product.title ?? "T-Shirt",
+                  style: AppStyles.black18BoldStyle,
+                ),
+                HeightSpace(  10.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon( Icons.star,
+                    color: Colors.amber,
+                    size: 20.sp,
+                    ),
+                    Text(product.rating?.rate.toString() ?? "4.5  ",
+                      style: AppStyles.black15BoldStyle,
+                    ),
+                    Text("(${product.rating?.count.toString() ?? "120"}) Reviews",
+                      style: AppStyles.grey12MediumStyle,
+                    ), 
+                  ]                   
+                ),
+                HeightSpace(  20.h),
+                      
+                Text(product.description ?? "T shirt for men, made of high quality cotton, comfortable to wear and stylish design.",
+                  style: AppStyles.grey12MediumStyle,
+                  textAlign: TextAlign.center,
+                ),
+                 HeightSpace(  40.h), 
+               
+                 
+                
+              ],
+                        ),
+            ),
         ),
       
     Positioned(
@@ -109,22 +113,46 @@ class ProductDetailsScreen extends StatelessWidget {
                           ),
                           HeightSpace(4),
                           Text(
-                            "1120 \$",
+                           product.price.toString(),
                             style: AppStyles.black16w500Style.copyWith(
                                 fontSize: 24.sp, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
                       const WidthSpace(16),
-                      PrimayButtonWidget(
-                        width: MediaQuery.of(context).size.width * 0.5,
-                        buttonText: "Add To Cart",
-                        icon: Icon(
-                          Icons.shopping_cart,
-                          color: Colors.white,
-                          size: 16.sp,
-                        ),
-                        onPress: () {},
+                      BlocConsumer<CartCubit, CartState>(
+                        listener: (context, state) {
+                          if (state is SuccessAddingToCarts) {
+                            showAnimatedSnackDialog(context,
+                                message:
+                                    "Product Added Successfully To Our Cart",
+                                type: AnimatedSnackBarType.success);
+                          }
+                        },
+                        builder: (context, state) {
+                          if (state is AddingToCart) {
+                            return PrimayButtonWidget(
+                              width: MediaQuery.of(context).size.width * 0.5,
+                              isLoading: true,
+                              buttonText: "Add To Cart",
+                              onPress: () {},
+                            );
+                          }
+                          return PrimayButtonWidget(
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            buttonText: "Add To Cart",
+                            icon: Icon(
+                              Icons.shopping_cart,
+                              color: Colors.white,
+                              size: 16.sp,
+                            ),
+                            onPress: () {
+                              context
+                                  .read<CartCubit>()
+                                  .addingToCart(product: product, quantity: 1);
+                            },
+                          );
+                        },
                       ),
                     ],
                   ),

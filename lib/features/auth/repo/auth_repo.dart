@@ -28,7 +28,12 @@ class AuthRepo {
             LoginResponseModel.fromJson(response.data);
 
         if (loginResponseModel.token != null) {
-         await sl<StorageHelper>().saveToken(loginResponseModel.token!);
+         {
+           await sl<StorageHelper>().saveToken(loginResponseModel.token!);
+           if (loginResponseModel.refreshToken != null) {
+              await sl<StorageHelper>().saveRefreshToken(loginResponseModel.refreshToken!);
+            }
+         }
 
           return Right(loginResponseModel);
         } else {
@@ -45,4 +50,28 @@ class AuthRepo {
       return Left(error.toString());
     }
   }
+
+  Future<String?> refreshAccessToken() async {
+  final refreshToken = await sl<StorageHelper>().getRefreshToken();
+  if (refreshToken == null) return null;
+
+  try {
+    final response = await Dio().post(
+      ApiEndpoints.refreshToken,
+      data: {'refreshToken': refreshToken},
+    );
+
+    if (response.statusCode == 200) {
+      final newAccessToken = response.data['Token'];
+      final newRefreshToken = response.data['Refreshtoken'];
+
+      await sl<StorageHelper>().saveToken(newAccessToken);
+      await sl<StorageHelper>().saveRefreshToken(newRefreshToken);
+      return newAccessToken;
+    }
+  } catch (e) {
+    // Handle error (e.g., refresh token expired)
+    return null;
+  }
+}
 }

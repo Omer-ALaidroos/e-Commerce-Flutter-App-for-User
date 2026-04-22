@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import 'package:e_commerce_app/core/networking/api_endpoints.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -20,8 +19,10 @@ class DioHelper {
   getRequest({
     required String endPoint,
     Map<String, dynamic>? query,
+    String? token,
   }) async {
     try {
+      dio!.options.headers['Authorization'] = 'Bearer $token';
       Response response = await dio!.get(endPoint, queryParameters: query);
 
       return response;

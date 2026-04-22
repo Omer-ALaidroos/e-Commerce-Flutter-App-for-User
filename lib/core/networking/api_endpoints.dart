@@ -1,9 +1,12 @@
 class ApiEndpoints {
-  static const String baseUrl = "https://fakestoreapi.com";
+  static const String baseUrl = "http://10.0.2.2:5214";
+  static const String allCategories = "/api/Category/All";
 
-  static const String register = "/users";
+  static const String register = "/api/Authentication/create";
 
   static const String login = "/auth/login";
+ 
+  static const String refreshToken = "/auth/refresh-token";
 
   static const String carts = "/carts";
 

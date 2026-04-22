@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:e_commerce_app/core/utils/service_locator.dart';
 import 'package:e_commerce_app/core/utils/storage_helper.dart';
-import 'package:e_commerce_app/features/auth/cubit/auth_state.dart';
+import 'package:e_commerce_app/features/auth/cubit/auth/auth_state.dart';
 import 'package:e_commerce_app/features/auth/models/login_response_model.dart';
 import 'package:e_commerce_app/features/auth/repo/auth_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

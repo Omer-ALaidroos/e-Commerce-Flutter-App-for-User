@@ -8,6 +8,12 @@ class StorageHelper {
     await storage.write(key: 'token', value: token);
   }
 
+  Future saveRefreshToken(String refreshToken) async {
+    await storage.write(key: 'refreshToken', value: refreshToken);
+  }
+  Future<String?> getRefreshToken() async {
+    return await storage.read(key: 'refreshToken') ?? "";
+  }
   Future<String?> getToken() async {
     return await storage.read(key: 'token') ?? "";
   }

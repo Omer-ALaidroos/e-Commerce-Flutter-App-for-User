@@ -1,4 +1,6 @@
 import 'package:animated_snack_bar/animated_snack_bar.dart';
+import 'package:e_commerce_app/core/networking/api_endpoints.dart';
+import 'package:e_commerce_app/core/networking/dio_helper.dart';
 import 'package:e_commerce_app/core/routing/app_routes.dart';
 import 'package:e_commerce_app/core/styling/app_colors.dart';
 import 'package:e_commerce_app/core/styling/app_styles.dart';
@@ -9,8 +11,8 @@ import 'package:e_commerce_app/core/widgets/custom_text_field.dart';
 import 'package:e_commerce_app/core/widgets/loading_widget.dart';
 import 'package:e_commerce_app/core/widgets/primay_button_widget.dart';
 import 'package:e_commerce_app/core/widgets/spacing_widgets.dart';
-import 'package:e_commerce_app/features/auth/cubit/auth_cubit.dart';
-import 'package:e_commerce_app/features/auth/cubit/auth_state.dart';
+import 'package:e_commerce_app/features/auth/cubit/auth/auth_cubit.dart';
+import 'package:e_commerce_app/features/auth/cubit/auth/auth_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -51,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    
+ 
     return SafeArea(
       child: Scaffold(
         body: BlocConsumer<AuthCubit, AuthState>(

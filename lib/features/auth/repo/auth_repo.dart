@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:e_commerce_app/core/networking/api_endpoints.dart';
@@ -13,12 +15,12 @@ class AuthRepo {
   AuthRepo(this._dioHelper);
 
   Future<Either<String, LoginResponseModel>> login(
-      String username, String password) async {
+      String email, String password) async {
     try {
       final response = await _dioHelper.postRequest(
         endPoint: ApiEndpoints.login,
         data: {
-          "username": username,
+          "email": email,
           "password": password,
         },
       );
@@ -28,6 +30,8 @@ class AuthRepo {
             LoginResponseModel.fromJson(response.data);
 
         if (loginResponseModel.token != null) {
+          log(LoginResponseModel.fromJson(response.data).toString());
+          
          {
            await sl<StorageHelper>().saveToken(loginResponseModel.token!);
            if (loginResponseModel.refreshToken != null) {
@@ -44,10 +48,18 @@ class AuthRepo {
       }
     } catch (error) {
       if (error is DioException) {
-        return Left(error.response.toString());
+      if (error.type == DioExceptionType.badResponse) {
+        final errors = error.response?.data['errors'] as Map<String, dynamic>?;
+        if (errors != null) {
+          final errorMessages = errors.entries
+              .map((entry) => "${entry.key}: ${entry.value.join(', ')}")
+              .join('\n');
+          return Left(errorMessages);
+        }
       }
-
-      return Left(error.toString());
+      return Left(error.response?.data['message'] ?? error.message.toString());
+    }
+    return Left(error.toString());
     }
   }
 

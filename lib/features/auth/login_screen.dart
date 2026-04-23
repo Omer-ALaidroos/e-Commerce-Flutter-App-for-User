@@ -27,14 +27,14 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final formKey = GlobalKey<FormState>();
-  late TextEditingController username;
+  late TextEditingController email;
   late TextEditingController password;
   bool _hasCheckedToken = false;
 
   @override
   void initState() {
     super.initState();
-    username = TextEditingController();
+    email = TextEditingController();
     password = TextEditingController();
   }
 
@@ -104,14 +104,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     const HeightSpace(32),
-                    Text("User Name", style: AppStyles.black16w500Style),
+                    Text("Email", style: AppStyles.black16w500Style),
                     const HeightSpace(8),
                     CustomTextField(
-                      controller: username,
-                      hintText: "Enter Your User Name",
+                      controller: email,
+                      hintText: "Enter Your Email",
                       validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Enter Your User Name";
+                        if (value == null || value.isEmpty) {
+                          return "Email is required.";
+                        }
+                        final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+');
+                        if (!emailRegex.hasMatch(value)) {
+                          return "Invalid email format.";
                         }
                         return null;
                       },
@@ -122,17 +126,26 @@ class _LoginScreenState extends State<LoginScreen> {
                     CustomTextField(
                       hintText: "Enter Your Password",
                       controller: password,
-                      suffixIcon: Icon(
-                        Icons.remove_red_eye,
-                        color: AppColors.greyColor,
-                        size: 20.sp,
-                      ),
+                      isPassword: true,
+                      suffixIcon: const Icon(Icons.visibility_off_outlined),
                       validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Enter Your Password";
+                        if (value == null || value.isEmpty) {
+                          return "Password is required.";
                         }
-                        if (value.length < 6) {
-                          return "Password must be at least 6 characters";
+                        if (value.length < 8) {
+                          return "Password must be at least 8 characters long.";
+                        }
+                        if (!RegExp(r'[A-Z]').hasMatch(value)) {
+                          return "Password must contain at least one uppercase letter.";
+                        }
+                        if (!RegExp(r'[a-z]').hasMatch(value)) {
+                          return "Password must contain at least one lowercase letter.";
+                        }
+                        if (!RegExp(r'\d').hasMatch(value)) {
+                          return "Password must contain at least one digit.";
+                        }
+                        if (!RegExp(r'[^]').hasMatch(value)) {
+                          return "Password must contain at least one special character.";
                         }
                         return null;
                       },
@@ -143,13 +156,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPress: () {
                         if (formKey.currentState!.validate()) {
                           context.read<AuthCubit>().login(
-                            username: username.text,
+                            email: email.text,
                             password: password.text,
                           );
                         }
                            
                       },
                     ),
+                    const HeightSpace(12),
                     const Spacer(),
                     Center(
                       child: GestureDetector(
@@ -172,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    const HeightSpace(12),
+                   
                   ],
                 ),
               ),
@@ -185,7 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    username.dispose();
+    email.dispose();
     password.dispose();
     super.dispose();
   }

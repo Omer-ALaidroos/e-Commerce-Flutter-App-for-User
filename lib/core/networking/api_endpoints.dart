@@ -4,7 +4,7 @@ class ApiEndpoints {
 
   static const String register = "/api/Authentication/create";
 
-  static const String login = "/auth/login";
+  static const String login = "/api/Authentication/login";
  
   static const String refreshToken = "/auth/refresh-token";
 

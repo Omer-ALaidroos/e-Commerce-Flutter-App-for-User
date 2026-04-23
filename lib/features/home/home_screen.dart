@@ -29,8 +29,8 @@ class _HomeScreenState extends State<HomeScreen> {
   String selectedCat = "All";
   @override
   void initState() {
-    context.read<ProductCubit>().fetchProducts();
-    context.read<CategoriesCubit>().fetchCategories();
+   // context.read<ProductCubit>().fetchProducts();
+   // context.read<CategoriesCubit>().fetchCategories();
     super.initState();
   }
 

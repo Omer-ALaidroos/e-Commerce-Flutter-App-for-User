@@ -11,11 +11,11 @@ class AuthCubit extends Cubit<AuthState> {
 
   final AuthRepo _authRepo;
 
-  void login({required String username, required String password}) async {
+  void login({required String email, required String password}) async {
     emit(LoadingAuthState());
 
     final Either<String, LoginResponseModel> res =
-        await _authRepo.login(username, password);
+        await _authRepo.login(email, password);
 
     res.fold((error) {
       emit(ErrorAuthState(error));

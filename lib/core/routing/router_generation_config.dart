@@ -45,7 +45,7 @@ class RouterGenerationConfig {
       name: AppRoutes.productDetailsScreen,
       path: AppRoutes.productDetailsScreen,
       builder: (context, state) {
-        final product = state.extra as ProductsModel;
+        final product = state.extra as ProductModel;
         return BlocProvider(
         create: (context) => CartCubit(sl()),
         child: ProductDetailsScreen(product: product),

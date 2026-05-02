@@ -1,6 +1,4 @@
 import 'package:animated_snack_bar/animated_snack_bar.dart';
-import 'package:e_commerce_app/core/networking/api_endpoints.dart';
-import 'package:e_commerce_app/core/networking/dio_helper.dart';
 import 'package:e_commerce_app/core/routing/app_routes.dart';
 import 'package:e_commerce_app/core/styling/app_colors.dart';
 import 'package:e_commerce_app/core/styling/app_styles.dart';

@@ -30,7 +30,7 @@ class CartRepo {
 
   Future<Either<String, CartModel>> addToCart(
       {required String date,
-      required ProductsModel product,
+      required ProductModel product,
       required int quantity}) async {
     try {
       final response = await _dioHelper

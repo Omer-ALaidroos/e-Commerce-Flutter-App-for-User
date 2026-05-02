@@ -1,7 +1,4 @@
 import 'package:animated_snack_bar/animated_snack_bar.dart';
-import 'package:e_commerce_app/core/routing/app_routes.dart';
-import 'package:e_commerce_app/core/styling/app_colors.dart';
-import 'package:e_commerce_app/core/styling/app_styles.dart';
 import 'package:e_commerce_app/core/utils/animated_snack_dialog.dart';
 import 'package:e_commerce_app/core/widgets/custom_text_field.dart';
 import 'package:e_commerce_app/core/widgets/loading_widget.dart';

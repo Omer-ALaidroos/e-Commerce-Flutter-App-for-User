@@ -1,6 +1,9 @@
+import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:dartz/dartz.dart';
 import 'package:e_commerce_app/features/home/cubit/categories_state.dart';
+import 'package:e_commerce_app/features/home/models/category_model.dart';
 import 'package:e_commerce_app/features/home/repo/home_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,8 +13,8 @@ class CategoriesCubit extends Cubit<CategoriesState> {
   void fetchCategories() async {
     emit(CategoriesLoading());
 
-    final Either<String, List<String>> res = await _homeRepo.getCategories();
-
+    final Either<String, List<CategoryModel>> res = await _homeRepo.getCategories();
+   log(res.toString());
     res.fold((error) {
       emit(CategoriesError(error));
     }, (right) {

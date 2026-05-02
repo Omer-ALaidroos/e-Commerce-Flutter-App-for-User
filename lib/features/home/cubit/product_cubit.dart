@@ -19,10 +19,10 @@ class ProductCubit extends Cubit<ProductState> {
     });
   }
 
-  void fetchProductCategories(String catName) async {
+  void fetchProductCategories(int catId) async {
     emit(ProductLoading());
 
-    final res = await _homeRepo.getProductCategories(catName);
+    final res = await _homeRepo.getProductCategories(catId);
 
     res.fold((error) {
       emit(ProductError(error));

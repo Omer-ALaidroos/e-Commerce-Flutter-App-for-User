@@ -21,7 +21,7 @@ class CartCubit extends Cubit<CartState> {
     });
   }
 
-  addingToCart({required ProductsModel product, required int quantity}) async {
+  addingToCart({required ProductModel product, required int quantity}) async {
     emit(AddingToCart());
     DateTime dateTime = DateTime.now();
     final res = await _cartRepo.addToCart(

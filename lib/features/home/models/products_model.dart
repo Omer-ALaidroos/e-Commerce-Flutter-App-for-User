@@ -1,48 +1,48 @@
+﻿List<ProductModel> productModelFromJson(dynamic str) =>
+    List<ProductModel>.from(str.map((x) => ProductModel.fromJson(x)));
 
-List<ProductsModel> productsModelFromJson(str) =>
-    List<ProductsModel>.from(str.map((x) => ProductsModel.fromJson(x)));
+class ProductModel {
+  final int? id;
+  final String? name;
+  final String? description;
+  final double price;
+  final int quantity;
+  final int categoryId;
+  final String? imageUrl;
+  final DateTime? createdAt;
 
-class ProductsModel {
-  int? id;
-  String? title;
-  double? price;
-  String? description;
-  String? category;
-  String? image;
-  Rating? rating;
-
-  ProductsModel({
+  ProductModel({
     this.id,
-    this.title,
-    this.price,
+    this.name,
     this.description,
-    this.category,
-    this.image,
-    this.rating,
+    required this.price,
+    required this.quantity,
+    required this.categoryId,
+    this.imageUrl,
+    this.createdAt,
   });
 
-  factory ProductsModel.fromJson(Map<String, dynamic> json) => ProductsModel(
-        id: json["id"],
-        title: json["title"],
-        price: json["price"]?.toDouble(),
-        description: json["description"],
-        category: json["category"],
-        image: json["image"],
-        rating: json["rating"] == null ? null : Rating.fromJson(json["rating"]),
+  factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
+        id: json["id"] as int?,
+        name: json["name"] as String?,
+        description: json["description"] as String?,
+        price: (json["price"] as num?)?.toDouble() ?? 0.0,
+        quantity: json["quantity"] as int? ?? 0,
+        categoryId: json["categoryId"] as int? ?? 0,
+        imageUrl: json["imageUrl"] as String?,
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"] as String),
       );
-}
 
-class Rating {
-  double? rate;
-  int? count;
-
-  Rating({
-    this.rate,
-    this.count,
-  });
-
-  factory Rating.fromJson(Map<String, dynamic> json) => Rating(
-        rate: json["rate"]?.toDouble(),
-        count: json["count"],
-      );
+  Map<String, dynamic> toJson() => {
+        if (id != null) "id": id,
+        if (name != null) "name": name,
+        if (description != null) "description": description,
+        "price": price,
+        "quantity": quantity,
+        "categoryId": categoryId,
+        if (imageUrl != null) "imageUrl": imageUrl,
+        if (createdAt != null) "createdAt": createdAt!.toIso8601String(),
+      };
 }

@@ -1,5 +1,6 @@
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:e_commerce_app/core/networking/api_endpoints.dart';
 import 'package:e_commerce_app/core/styling/app_assets.dart';
 import 'package:e_commerce_app/core/styling/app_colors.dart';
 import 'package:e_commerce_app/core/styling/app_styles.dart';
@@ -15,7 +16,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
   const ProductDetailsScreen({super.key,required this.product});
-   final ProductsModel product;
+   final ProductModel product;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,7 @@ class ProductDetailsScreen extends StatelessWidget {
       body: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(12.0),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -50,30 +51,31 @@ class ProductDetailsScreen extends StatelessWidget {
               children: [
                
                        
-               CachedNetworkImage(imageUrl: product.image ?? "",
+               CachedNetworkImage(
+               imageUrl: "${ApiEndpoints.baseUrl}/${product.imageUrl}",
                width: double.infinity,
                height: 300.h,
                fit: BoxFit.cover,
                ),
                 HeightSpace(  50.h),
-                Text(product.title ?? "T-Shirt",
-                  style: AppStyles.black18BoldStyle,
+                Text(product.name ?? "",
+                  style: AppStyles.black18BoldStyle.copyWith(fontSize: 24.sp),
                 ),
                 HeightSpace(  10.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Icon( Icons.star,
-                    color: Colors.amber,
-                    size: 20.sp,
+                    Icon(
+                      Icons.production_quantity_limits, // Icon for quantity
+                      color: AppColors.blackColor,
+                      size: 20.sp,
                     ),
-                    Text(product.rating?.rate.toString() ?? "4.5  ",
+                    WidthSpace(4.w), // Add spacing between the quantity icon and text
+                    Text(
+                      product.quantity.toString(),
                       style: AppStyles.black15BoldStyle,
                     ),
-                    Text("(${product.rating?.count.toString() ?? "120"}) Reviews",
-                      style: AppStyles.grey12MediumStyle,
-                    ), 
-                  ]                   
+                  ],
                 ),
                 HeightSpace(  20.h),
                       
@@ -81,7 +83,7 @@ class ProductDetailsScreen extends StatelessWidget {
                   style: AppStyles.grey12MediumStyle,
                   textAlign: TextAlign.center,
                 ),
-                 HeightSpace(  40.h), 
+                 HeightSpace(  200.h), 
                
                  
                 
@@ -99,7 +101,7 @@ class ProductDetailsScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Divider(),
-                  HeightSpace(10.h),
+                  HeightSpace(5.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -113,7 +115,7 @@ class ProductDetailsScreen extends StatelessWidget {
                           ),
                           HeightSpace(4),
                           Text(
-                           product.price.toString(),
+                            "\$${product.price}",
                             style: AppStyles.black16w500Style.copyWith(
                                 fontSize: 24.sp, fontWeight: FontWeight.bold),
                           ),
@@ -156,7 +158,7 @@ class ProductDetailsScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const HeightSpace(8.0),
+                 
                 ],
               ),
             ),

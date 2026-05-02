@@ -29,8 +29,8 @@ class _HomeScreenState extends State<HomeScreen> {
   String selectedCat = "All";
   @override
   void initState() {
-   // context.read<ProductCubit>().fetchProducts();
-   // context.read<CategoriesCubit>().fetchCategories();
+    context.read<ProductCubit>().fetchProducts();
+    context.read<CategoriesCubit>().fetchCategories();
     super.initState();
   }
 
@@ -80,18 +80,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     children: state.categories.map((cat) {
                       return CategoryItemWidget(
-                        categoryName: cat,
-                        isSelected: selectedCat == cat ? true : false,
+                        categoryName: cat.name,
+                        isSelected: selectedCat == cat.name ? true : false,
                         onPress: () {
                           setState(() {
-                            selectedCat = cat;
+                            selectedCat = cat.name;
 
-                            if (selectedCat == "All") {
+                            if (selectedCat == "all") {
                               context.read<ProductCubit>().fetchProducts();
                             } else {
                               context
                                   .read<ProductCubit>()
-                                  .fetchProductCategories(cat);
+                                  .fetchProductCategories(cat.id);
                             }
                           });
                         },
@@ -134,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               }
               if (state is ProductLoaded) {
-                List<ProductsModel> products = state.products;
+                List<ProductModel> products = state.products;
 
                 if (products.isEmpty) {
                   return const Center(
@@ -167,8 +167,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               verticalOffset: 200.0,
                               child: FadeInAnimation(
                                 child: ProductItemWidget(
-                                  image: products[index].image ?? "",
-                                  title: products[index].title ?? "",
+                                      id: products[index].id ?? 0,
+                                  image: products[index].imageUrl ?? "",
+                                  title: products[index].name ?? "",
                                   price: products[index].price.toString(),
                                   onTap: () {
                                     GoRouter.of(context).pushNamed(

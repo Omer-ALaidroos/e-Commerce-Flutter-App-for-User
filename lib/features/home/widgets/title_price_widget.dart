@@ -1,3 +1,4 @@
+import 'package:e_commerce_app/core/styling/app_colors.dart';
 import 'package:e_commerce_app/core/styling/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -48,7 +49,7 @@ class TotalPriceWidget extends StatelessWidget {
               style: AppStyles.black18BoldStyle.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: 15.sp,
-                  color: Colors.grey)),
+                  color: AppColors.primaryColor )),
         ],
       ),
     );

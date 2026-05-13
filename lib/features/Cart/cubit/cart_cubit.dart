@@ -1,5 +1,8 @@
 
+import 'dart:developer';
+
 import 'package:e_commerce_app/features/Cart/cubit/cart_state.dart';
+import 'package:e_commerce_app/features/Cart/models/cart_item_model.dart';
 import 'package:e_commerce_app/features/Cart/repo/cart_repo.dart';
 import 'package:e_commerce_app/features/home/models/products_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,28 +12,75 @@ class CartCubit extends Cubit<CartState> {
 
   final CartRepo _cartRepo;
 
-  fecthCarts() async {
+  fetchCarts() async {
+    log("Fetching carts for userId before loading carts: ");
     emit(LoadingCarts());
-
+    log("Fetching carts for userId after loading carts: ");
     final res = await _cartRepo.getUserCart();
-
+  log("Result of fetching carts for userId : $res");
     res.fold((error) {
       emit(ErrorGettingCarts(error));
-    }, (cart) {
-      emit(SuccessGettingCarts(cart));
+    }, (cartItems) {
+      emit(SuccessGettingCarts(cartItems));
     });
   }
 
-  addingToCart({required ProductModel product, required int quantity}) async {
+  addingToCart({required int productId, required int quantity}) async {
     emit(AddingToCart());
-    DateTime dateTime = DateTime.now();
     final res = await _cartRepo.addToCart(
-        product: product, quantity: quantity, date: dateTime.toString());
+        productId: productId,
+        quantity: quantity);
 
     res.fold((error) {
       emit(ErrorAddingToCart(error));
-    }, (cart) {
-      emit(SuccessAddingToCarts(cart));
+    }, (cartItem) {
+      emit(SuccessAddingToCarts([cartItem]));
     });
+  }
+
+  removeCartItem(int cartItemId) async {
+    final res = await _cartRepo.removeCartItem(cartItemId);
+    res.fold((error) {
+      emit(ErrorGettingCarts(error)); 
+    }, (successMessage) {
+      fetchCarts(); 
+    });
+  }
+
+  incrementQuantity(int cartItemId) async {
+    final res = await _cartRepo.incrementQuantity(cartItemId);
+    res.fold((error) {
+      emit(ErrorGettingCarts(error));
+    }, (success) {
+      fetchCarts();
+    });
+  }
+
+  decrementQuantity(int cartItemId) async {
+    final res = await _cartRepo.decrementQuantity(cartItemId);
+    res.fold((error) {
+      emit(ErrorGettingCarts(error));
+    }, (success) {
+      fetchCarts();
+    });
+  }
+
+  checkout({required int shippingAddressId, required int payment}) async {
+    List<CartItemModel> currentItems = [];
+    if (state is SuccessGettingCarts) {
+      currentItems = (state as SuccessGettingCarts).cartItems;
+    } else if (state is Checkout) {
+      currentItems = (state as Checkout).cartItems;
+    }
+    emit(Checkout(currentItems));
+    final res = await _cartRepo.checkout(
+      shippingAddressId: shippingAddressId,
+      payment: payment
+    );
+    res.fold((error) {
+      emit(ErrorCheckout(error));
+    }, (successMessage) {
+      emit(SuccessCheckout(successMessage));
+    }); 
   }
 }

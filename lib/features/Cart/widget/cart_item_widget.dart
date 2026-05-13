@@ -1,13 +1,17 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:e_commerce_app/core/networking/api_endpoints.dart';
 import 'package:e_commerce_app/core/styling/app_styles.dart';
 import 'package:e_commerce_app/core/widgets/spacing_widgets.dart';
-import 'package:e_commerce_app/features/Cart/models/cart_model.dart';
+import 'package:e_commerce_app/features/Cart/cubit/cart_cubit.dart';
+import 'package:e_commerce_app/features/Cart/models/cart_item_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CartItemWidget extends StatelessWidget {
-  final Product product;
-  const CartItemWidget({super.key, required this.product});
+  final CartItemModel cartItem;
+  const CartItemWidget({super.key, required this.cartItem});
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +26,11 @@ class CartItemWidget extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 83.w,
-              height: 79.h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.r),
-                color: Colors.grey,
-              ),
+           CachedNetworkImage(
+              imageUrl:cartItem.imageUrl != null ? "${ApiEndpoints.baseUrl}/${cartItem.imageUrl}" : "https://via.placeholder.com/150",
+              width: 80.w,
+              height: 80.h,
+              fit: BoxFit.cover,
             ),
             WidthSpace(16),
             Expanded(
@@ -39,28 +41,37 @@ class CartItemWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Product Item ${product.productId}",
+                        cartItem.productName ?? "Product Name ",
                         style: AppStyles.black15BoldStyle,
                       ),
                       Spacer(),
-                      Icon(
-                        Icons.delete,
-                        color: Colors.red,
-                      )
+                      IconButton(
+                        onPressed: () {
+                          context.read<CartCubit>().removeCartItem(cartItem.cartItemId!);
+                        },
+                        icon: const Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                      ),
                     ],
                   ),
                   const HeightSpace(30),
                   Row(
                     children: [
                       Text(
-                        "1200 \$",
+                        "${cartItem.price} \$",
                         style: AppStyles.black15BoldStyle,
                       ),
                       Spacer(),
                       Row(
                         children: [
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              if (cartItem.cartItemId != null) {
+                                context.read<CartCubit>().incrementQuantity(cartItem.cartItemId!);
+                              }
+                            },
                             child: Container(
                               width: 24.w,
                               height: 24.h,
@@ -78,12 +89,17 @@ class CartItemWidget extends StatelessWidget {
                           ),
                           WidthSpace(8),
                           Text(
-                            "1",
+                            cartItem.quantity.toString(),
                             style: AppStyles.black15BoldStyle,
                           ),
                           WidthSpace(8),
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              
+                              if (cartItem.cartItemId != null && cartItem.quantity! > 1) {
+                                context.read<CartCubit>().decrementQuantity(cartItem.cartItemId!);
+                              }
+                            },
                             child: Container(
                               width: 24.w,
                               height: 24.h,

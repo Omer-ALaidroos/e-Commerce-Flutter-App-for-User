@@ -6,9 +6,12 @@ class ApiEndpoints {
   static const String productsByCategoryId = "/api/Product/GetProductByCategoryId";
 
   static const String login = "/api/Authentication/login";
- 
-
-
+   static const String myCarts = "/api/Cart/my-cart";
+  static const String addToCart = "/api/Cart/add";
+  static const String removeCartItem = "/api/Cart/remove";
+  static const String incrementCartItem = "/api/Cart/increment-quentitey";
+  static const String decrementCartItem = "/api/Cart/decrement-quentitey";
+  static const String checkout = "/api/Order/Create";
 
 
 

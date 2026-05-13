@@ -1,4 +1,5 @@
 class LoginResponseModel {
+  String? userId;
   bool? success;
   String? message;
   String? token;

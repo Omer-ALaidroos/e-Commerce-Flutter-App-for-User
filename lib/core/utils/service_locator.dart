@@ -1,6 +1,8 @@
 
 import 'package:e_commerce_app/core/networking/dio_helper.dart';
 import 'package:e_commerce_app/core/utils/storage_helper.dart';
+import 'package:e_commerce_app/features/auth/repo/auth_local_data_source.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:e_commerce_app/features/Cart/cubit/cart_cubit.dart';
 import 'package:e_commerce_app/features/Cart/repo/cart_repo.dart';
 import 'package:e_commerce_app/features/auth/cubit/auth/auth_cubit.dart';
@@ -20,9 +22,10 @@ void setupServiceLocator() {
   // Dio Helper
   sl.registerSingleton<DioHelper>(dio);
 
-  //Storage Helper
-
+  // External & Storage Helpers
+  sl.registerLazySingleton(() => const FlutterSecureStorage());
   sl.registerLazySingleton(() => StorageHelper());
+  sl.registerLazySingleton(() => AuthLocalDataSource(sl<FlutterSecureStorage>()));
 
   // Repos
   sl.registerLazySingleton(() => AuthRepo(sl<DioHelper>()));

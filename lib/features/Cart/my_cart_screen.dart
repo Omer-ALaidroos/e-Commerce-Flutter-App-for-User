@@ -1,6 +1,5 @@
-import 'dart:math';
 
-import 'package:e_commerce_app/core/styling/app_colors.dart';
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:e_commerce_app/core/styling/app_styles.dart';
 import 'package:e_commerce_app/core/widgets/loading_widget.dart';
 import 'package:e_commerce_app/core/widgets/primay_button_widget.dart';
@@ -24,12 +23,14 @@ class MyCartScreen extends StatefulWidget {
 class _MyCartScreenState extends State<MyCartScreen> {
   bool _hasFetchedCarts = false;
 
+ 
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_hasFetchedCarts) {
       _hasFetchedCarts = true;
-      context.read<CartCubit>().fecthCarts();
+    context.read<CartCubit>().fetchCarts();
     }
   }
 
@@ -40,15 +41,34 @@ class _MyCartScreenState extends State<MyCartScreen> {
         title: const Text('Cart'),
         centerTitle: true,
         backgroundColor: Colors.white,
-        leading:IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          }, 
-          icon: const Icon(Icons.arrow_back),
-        ),
+        leading: BlocBuilder<CartCubit, CartState>(
+  builder: (context, state) {
+    return IconButton(
+      onPressed: state is Checkout ? null : () {
+        Navigator.pop(context);
+      },
+      icon: const Icon(Icons.arrow_back),
+    );
+  },
+),
       ),
-      body: BlocBuilder<CartCubit, CartState>(
-        builder: (context, state) {
+      body: BlocListener<CartCubit, CartState>(
+        listener: (context, state) {
+          if (state is SuccessCheckout) {
+            AnimatedSnackBar.material(
+              "Order Created Successfully!",
+              type: AnimatedSnackBarType.success,
+            ).show(context);
+           
+          } else if (state is ErrorCheckout) {
+            AnimatedSnackBar.material(
+              state.message,
+              type: AnimatedSnackBarType.error,
+            ).show(context);
+          }
+        },
+        child: BlocBuilder<CartCubit, CartState>(
+          builder: (context, state) {
           if (state is LoadingCarts || state is InitialCartState) {
             return LoadingWidget(
               height: MediaQuery.of(context).size.height * 0.65,
@@ -57,38 +77,75 @@ class _MyCartScreenState extends State<MyCartScreen> {
 
           if (state is SuccessGettingCarts) {
             
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24.w),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const HeightSpace(20),
-                    ...state.cart.products!.map((p) {
-                      return CartItemWidget(product: p);
-                    }).toList(),
-                    HeightSpace(20),
-                    TitlePriceWidget(title: "Sub Total", price: "1190 \$"),
-                    TitlePriceWidget(title: "VAT (16 %)", price: "1190 \$"),
-                    TitlePriceWidget(title: "Shipping Fees", price: "1190 \$"),
-                    const HeightSpace(20),
-                    Divider(),
-                    const HeightSpace(20),
-                    TotalPriceWidget(title: "Total", price: "1190 \$"),
-                    const HeightSpace(20),
-                    PrimayButtonWidget(
-                      buttonText: "Go To Checkout",
-                      trailingIcon: Icon(
-                        Icons.payment,
-                        color: Colors.white,
-                        size: 16.sp,
-                      ),
-                      onPress: () {},
-                    ),
-                    const HeightSpace(20),
-                  ],
+            if (state.cartItems.isEmpty) {
+              return Center(
+                child: Text(
+                  'Your cart is empty.',
+                  style: AppStyles.black16w500Style,
                 ),
-              ),
+              );
+            }
+
+            // Calculate total price dynamically
+            double totalPrice = state.cartItems.fold(
+                0, (sum, item) => sum + ((item.price ?? 0) * (item.quantity ?? 1)));
+
+            return Stack(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24.w),
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.only(bottom: 180.h), // Add padding to prevent content from being hidden by the bottom bar
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const HeightSpace(20),
+                        ...state.cartItems.map((cartItem) {
+                          return CartItemWidget(cartItem: cartItem);
+                        }).toList(), // Ensure map returns a List
+                        const HeightSpace(20),
+                      ],
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    color: Colors.white, // Background color for the bottom section
+                    padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Divider(),
+                        const HeightSpace(10),
+                        TotalPriceWidget(
+                            title: "Total", 
+                            price: "\$${totalPrice.toStringAsFixed(2)}"),
+                        const HeightSpace(20),
+                        state is Checkout 
+                        ? const Center(child: CircularProgressIndicator())
+                        : PrimayButtonWidget(
+                            buttonText: "Confirm Order",
+                            trailingIcon: Icon(
+                              Icons.check_circle_outline,
+                              color: Colors.white,
+                              size: 16.sp,
+                            ),
+                            onPress: () {
+                              // Creating order with placeholder values for now
+                              context.read<CartCubit>().checkout(
+                                    shippingAddressId: 2, 
+                                    payment: 1, 
+                                  );
+                            },
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             );
           }
 
@@ -104,7 +161,6 @@ class _MyCartScreenState extends State<MyCartScreen> {
               ),
             );
           }
-
           return Center(
             child: Text(
               'Your cart is empty.',
@@ -112,7 +168,11 @@ class _MyCartScreenState extends State<MyCartScreen> {
             ),
           );
         },
+        )
+        
       ),
+       
     );
+    
   }
 }

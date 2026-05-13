@@ -7,6 +7,7 @@ import 'package:e_commerce_app/core/networking/api_endpoints.dart';
 import 'package:e_commerce_app/core/networking/dio_helper.dart';
 import 'package:e_commerce_app/core/utils/service_locator.dart';
 import 'package:e_commerce_app/core/utils/storage_helper.dart';
+import 'package:e_commerce_app/features/auth/repo/auth_local_data_source.dart';
 import 'package:e_commerce_app/features/auth/models/login_response_model.dart';
 
 class AuthRepo {
@@ -34,6 +35,9 @@ class AuthRepo {
           
          {
            await sl<StorageHelper>().saveToken(loginResponseModel.token!);
+           if (loginResponseModel.userId != null) {
+             await sl<AuthLocalDataSource>().saveUserId(loginResponseModel.userId!);
+           }
            if (loginResponseModel.refreshToken != null) {
               await sl<StorageHelper>().saveRefreshToken(loginResponseModel.refreshToken!);
             }

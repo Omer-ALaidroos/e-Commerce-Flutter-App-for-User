@@ -9,6 +9,8 @@ import 'package:e_commerce_app/core/widgets/primay_button_widget.dart';
 import 'package:e_commerce_app/core/widgets/spacing_widgets.dart';
 import 'package:e_commerce_app/features/Cart/cubit/cart_cubit.dart';
 import 'package:e_commerce_app/features/Cart/cubit/cart_state.dart';
+import 'package:e_commerce_app/core/utils/service_locator.dart';
+import 'package:e_commerce_app/features/auth/repo/auth_local_data_source.dart';
 import 'package:e_commerce_app/features/home/models/products_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -148,10 +150,12 @@ class ProductDetailsScreen extends StatelessWidget {
                               color: Colors.white,
                               size: 16.sp,
                             ),
-                            onPress: () {
-                              context
-                                  .read<CartCubit>()
-                                  .addingToCart(product: product, quantity: 1);
+                            onPress: () async {
+                           
+                                context
+                                    .read<CartCubit>()
+                                    .addingToCart(productId: product.id!, quantity: 1);
+                              
                             },
                           );
                         },

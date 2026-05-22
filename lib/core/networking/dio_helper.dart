@@ -14,12 +14,11 @@ class DioHelper {
         receiveDataWhenStatusError: true,
       ),
     );
-dio?.interceptors.add(LogInterceptor(
-  request: true,
-  requestBody: true,
-  responseBody: true,
-));
-    dio!.interceptors.add(PrettyDioLogger());
+    dio!.interceptors.add(PrettyDioLogger(
+      requestHeader: true,
+      requestBody: true,
+      responseBody: true,
+    ));
   }
 
   getRequest({

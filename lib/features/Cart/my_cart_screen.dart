@@ -41,16 +41,7 @@ class _MyCartScreenState extends State<MyCartScreen> {
         title: const Text('Cart'),
         centerTitle: true,
         backgroundColor: Colors.white,
-        leading: BlocBuilder<CartCubit, CartState>(
-  builder: (context, state) {
-    return IconButton(
-      onPressed: state is Checkout ? null : () {
-        Navigator.pop(context);
-      },
-      icon: const Icon(Icons.arrow_back),
-    );
-  },
-),
+        
       ),
       body: BlocListener<CartCubit, CartState>(
         listener: (context, state) {

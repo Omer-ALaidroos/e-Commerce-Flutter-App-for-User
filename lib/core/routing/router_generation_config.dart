@@ -9,7 +9,12 @@ import 'package:e_commerce_app/features/auth/cubit/register/register_cubit.dart'
 import 'package:e_commerce_app/features/auth/cubit/auth/auth_cubit.dart';
 import 'package:e_commerce_app/features/auth/login_screen.dart';
 import 'package:e_commerce_app/features/auth/register_screen.dart';
+import 'package:e_commerce_app/features/order/cubit/order_cubit.dart';
+import 'package:e_commerce_app/features/order/cubit/order_details_cubit.dart';
 import 'package:e_commerce_app/features/home/models/products_model.dart';
+import 'package:e_commerce_app/features/order/models/order_model.dart';
+import 'package:e_commerce_app/features/order/my_order_screen.dart';
+import 'package:e_commerce_app/features/order/order_detailes_screen.dart';
 import 'package:e_commerce_app/features/main%20screen/main_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -57,10 +62,29 @@ class RouterGenerationConfig {
       path: AppRoutes.addressScreen,
       builder: (context, state) => AddressScreen(),
     ),
-    GoRoute(
-      name: AppRoutes.myCartScreen,
-      path: AppRoutes.myCartScreen,
-      builder: (context, state) => MyCartScreen(),
-    ),
+      GoRoute(
+        name: AppRoutes.myCartScreen,
+        path: AppRoutes.myCartScreen,
+        builder: (context, state) => MyCartScreen(),
+      ),
+      GoRoute(
+        name: AppRoutes.orderDetailesScreen,
+        path: AppRoutes.orderDetailesScreen,
+        builder: (context, state) {
+          final orderID = state.extra as int;
+          return BlocProvider(
+            create: (context) => OrderDetailsCubit(sl())..fetchOrderDetails(orderID),
+            child: OrderDetailesScreen(orderId: orderID),
+          );
+        },
+      ),
+        GoRoute(
+          name: AppRoutes.myOrderScreen,
+          path: AppRoutes.myOrderScreen,
+          builder: (context, state) => BlocProvider(
+            create: (context) => OrderCubit(sl()),
+            child:  MyOrderScreen(),
+          ),
+        ),
   ]);
 }

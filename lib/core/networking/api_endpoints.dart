@@ -12,9 +12,9 @@ class ApiEndpoints {
   static const String incrementCartItem = "/api/Cart/increment-quentitey";
   static const String decrementCartItem = "/api/Cart/decrement-quentitey";
   static const String checkout = "/api/Order/Create";
-
-
-
+  static const String myOrderSummaries = "/api/Order/OrderSummaries";
+  static const String orderDetailsByOrderId = "/api/Order/GetById";
+  
 
 
 

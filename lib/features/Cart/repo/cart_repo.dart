@@ -6,7 +6,6 @@ import 'package:e_commerce_app/core/networking/dio_helper.dart';
 import 'package:e_commerce_app/core/utils/service_locator.dart';
 import 'package:e_commerce_app/core/utils/storage_helper.dart';
 import 'package:e_commerce_app/features/Cart/models/cart_item_model.dart';
-import 'package:e_commerce_app/features/home/models/products_model.dart';
 
 class CartRepo {
   final DioHelper _dioHelper;

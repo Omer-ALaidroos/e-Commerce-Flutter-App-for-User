@@ -7,6 +7,8 @@ import 'package:e_commerce_app/features/home/cubit/categories_cubit.dart';
 import 'package:e_commerce_app/features/home/cubit/product_cubit.dart';
 import 'package:e_commerce_app/features/home/home_screen.dart';
 import 'package:e_commerce_app/features/auth/cubit/auth/auth_cubit.dart';
+import 'package:e_commerce_app/features/order/cubit/order_cubit.dart';
+import 'package:e_commerce_app/features/order/my_order_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,6 +36,7 @@ class _MainScreenState extends State<MainScreen> {
       child: HomeScreen(),
     ),
     MyCartScreen(),
+  
     BlocProvider(
       create: (context) => sl<AuthCubit>(),
       child: const AccountScreen(),
@@ -70,6 +73,7 @@ class _MainScreenState extends State<MainScreen> {
                   size: 30.sp,
                 ),
                 label: "Cart"),
+
             BottomNavigationBarItem(
                 icon: Icon(
                   Icons.person_3_outlined,

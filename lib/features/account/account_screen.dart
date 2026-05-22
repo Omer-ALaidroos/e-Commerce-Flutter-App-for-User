@@ -34,7 +34,9 @@ class AccountScreen extends StatelessWidget {
           AccountItemWidget(
             iconPath: AppAssets.box,
             title: "My Orders",
-            onTap: () {},
+            onTap: () {
+              GoRouter.of(context).pushNamed(AppRoutes.myOrderScreen);
+            },
           ),
           const Divider(
             thickness: 8,
@@ -43,7 +45,9 @@ class AccountScreen extends StatelessWidget {
           AccountItemWidget(
             iconPath: AppAssets.details,
             title: "My Details",
-            onTap: () {},
+            onTap: () {
+            
+            },
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),

@@ -14,6 +14,12 @@ class AddressScreen extends StatelessWidget {
         title: const Text('Address'),
         centerTitle: true,
         backgroundColor: Colors.white,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w),

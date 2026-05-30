@@ -27,10 +27,13 @@ class DioHelper {
     String? token,
   }) async {
     try {
-     //log(token.toString());
-      dio!.options.headers['Authorization'] = 'Bearer $token';
-      Response response = await dio!.get(endPoint, queryParameters: query);
-
+      Response response = await dio!.get(
+        endPoint,
+        queryParameters: query,
+        options: Options(
+          headers: token != null ? {'Authorization': 'Bearer $token'} : null,
+        ),
+      );
       return response;
     } catch (e) {
       rethrow;
@@ -39,15 +42,22 @@ class DioHelper {
 
   postRequest({
     required String endPoint,
-    required Map<String, dynamic> data,
+    Map<String, dynamic>? data,
+    Map<String, dynamic>? query,
     String? token,
   }) async {
     try {
-      if (token != null) {
-        dio!.options.headers['Authorization'] = 'Bearer $token';
-         dio!.options.headers['Content-Type'] = 'application/json';
-      }
-      final Response response = await dio!.post(endPoint, data: data);
+      final Response response = await dio!.post(
+        endPoint,
+        data: data,
+        queryParameters: query,
+        options: Options(
+          headers: {
+            if (token != null) 'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
       return response;
     } catch (e) {
       rethrow;
@@ -61,13 +71,16 @@ class DioHelper {
     String? token,
   }) async {
     try {
-      if (token != null) {
-        dio!.options.headers['Authorization'] = 'Bearer $token';
-       
-      }
-      final Response response =
-          await dio!.put(endPoint, data: data, queryParameters: query);
-
+      final Response response = await dio!.put(
+        endPoint,
+        data: data,
+        queryParameters: query,
+        options: Options(
+          headers: {
+            if (token != null) 'Authorization': 'Bearer $token',
+          },
+        ),
+      );
       return response;
     } catch (e) {
     
@@ -80,10 +93,14 @@ class DioHelper {
     String? token,
   }) async {
     try {
-      if (token != null) {
-        dio!.options.headers['Authorization'] = 'Bearer $token';
-      }
-      final Response response = await dio!.delete(endPoint);
+      final Response response = await dio!.delete(
+        endPoint,
+        options: Options(
+          headers: {
+            if (token != null) 'Authorization': 'Bearer $token',
+          },
+        ),
+      );
       return response;
     } catch (e) {
       rethrow;

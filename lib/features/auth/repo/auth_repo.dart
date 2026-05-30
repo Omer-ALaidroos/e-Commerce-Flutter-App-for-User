@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
@@ -14,34 +13,81 @@ class AuthRepo {
   final DioHelper _dioHelper;
 
   AuthRepo(this._dioHelper);
-
-  Future<Either<String, LoginResponseModel>> login(
-      String email, String password) async {
+  Future<Either<String, String>> register({
+    required String fullName,
+    required String email,
+    required String password,
+    required String confirmPassword,
+    required String phoneNumber,
+  }) async {
     try {
       final response = await _dioHelper.postRequest(
-        endPoint: ApiEndpoints.login,
+        endPoint: ApiEndpoints.register,
         data: {
+          "fullName": fullName,
           "email": email,
           "password": password,
+          "confirmPassword": confirmPassword,
+          "phoneNumber": phoneNumber,
         },
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        LoginResponseModel loginResponseModel =
-            LoginResponseModel.fromJson(response.data);
+        return Right(response.data['message'] ?? 'Create Account successful');
+      } else {
+        return Left(response.toString());
+      }
+    } catch (error) {
+      if (error is DioException) {
+        if (error.type == DioExceptionType.badResponse) {
+          final errors =
+              error.response?.data['errors'] as Map<String, dynamic>?;
+          if (errors != null) {
+            final errorMessages = errors.entries
+                .map((entry) => "${entry.key}: ${entry.value.join(', ')}")
+                .join('\n');
+            return Left(errorMessages);
+          }
+        }
+        return Left(
+          error.response?.data['message'] ?? error.message.toString(),
+        );
+      }
+      return Left(error.toString());
+    }
+  }
+
+  Future<Either<String, LoginResponseModel>> login(
+    String email,
+    String password,
+  ) async {
+    try {
+      final response = await _dioHelper.postRequest(
+        endPoint: ApiEndpoints.login,
+        data: {"email": email, "password": password},
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        LoginResponseModel loginResponseModel = LoginResponseModel.fromJson(
+          response.data,
+        );
 
         if (loginResponseModel.token != null) {
           log(LoginResponseModel.fromJson(response.data).toString());
-          
-         {
-           await sl<StorageHelper>().saveToken(loginResponseModel.token!);
-           if (loginResponseModel.userId != null) {
-             await sl<AuthLocalDataSource>().saveUserId(loginResponseModel.userId!);
-           }
-           if (loginResponseModel.refreshToken != null) {
-              await sl<StorageHelper>().saveRefreshToken(loginResponseModel.refreshToken!);
+
+          {
+            await sl<StorageHelper>().saveToken(loginResponseModel.token!);
+            if (loginResponseModel.userId != null) {
+              await sl<AuthLocalDataSource>().saveUserId(
+                loginResponseModel.userId!,
+              );
             }
-         }
+            if (loginResponseModel.refreshToken != null) {
+              await sl<StorageHelper>().saveRefreshToken(
+                loginResponseModel.refreshToken!,
+              );
+            }
+          }
 
           return Right(loginResponseModel);
         } else {
@@ -52,22 +98,26 @@ class AuthRepo {
       }
     } catch (error) {
       if (error is DioException) {
-      if (error.type == DioExceptionType.badResponse) {
-        final errors = error.response?.data['errors'] as Map<String, dynamic>?;
-        if (errors != null) {
-          final errorMessages = errors.entries
-              .map((entry) => "${entry.key}: ${entry.value.join(', ')}")
-              .join('\n');
-          return Left(errorMessages);
+        if (error.type == DioExceptionType.badResponse) {
+          final errors =
+              error.response?.data['errors'] as Map<String, dynamic>?;
+          if (errors != null) {
+            final errorMessages = errors.entries
+                .map((entry) => "${entry.key}: ${entry.value.join(', ')}")
+                .join('\n');
+            return Left(errorMessages);
+          }
         }
+        return Left(
+          error.response?.data['message'] ?? error.message.toString(),
+        );
       }
-      return Left(error.response?.data['message'] ?? error.message.toString());
-    }
-    return Left(error.toString());
+      return Left(error.toString());
     }
   }
+}
 
-  Future<String?> refreshAccessToken() async {
+Future<String?> refreshAccessToken() async {
   final refreshToken = await sl<StorageHelper>().getRefreshToken();
   if (refreshToken == null) return null;
 
@@ -89,5 +139,4 @@ class AuthRepo {
     // Handle error (e.g., refresh token expired)
     return null;
   }
-}
 }

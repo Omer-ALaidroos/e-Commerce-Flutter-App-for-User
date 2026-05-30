@@ -5,6 +5,10 @@ import 'package:e_commerce_app/features/Cart/cubit/cart_cubit.dart';
 import 'package:e_commerce_app/features/Cart/my_cart_screen.dart';
 import 'package:e_commerce_app/features/Product%20details%20screen/product_details_screen.dart';
 import 'package:e_commerce_app/features/address/address_screen.dart';
+import 'package:e_commerce_app/features/my_Details/details_screen.dart';
+import 'package:e_commerce_app/features/my_Details/cubit/user_details_cubit.dart';
+import 'package:e_commerce_app/features/my_Details/models/user_details.dart';
+import 'package:e_commerce_app/features/my_Details/cubit/edit_cubit.dart';
 import 'package:e_commerce_app/features/auth/cubit/register/register_cubit.dart';
 import 'package:e_commerce_app/features/auth/cubit/auth/auth_cubit.dart';
 import 'package:e_commerce_app/features/auth/login_screen.dart';
@@ -86,5 +90,19 @@ class RouterGenerationConfig {
             child:  MyOrderScreen(),
           ),
         ),
+
+      GoRoute(
+        name: AppRoutes.myDetailsScreen,
+        path: AppRoutes.myDetailsScreen,
+        builder: (context, state) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (context) => UserDetailsCubit(sl())),
+              BlocProvider(create: (context) => EditCubit(sl())),
+            ],
+            child: const DetailsScreen(),
+          );
+        },
+      ),
   ]);
 }

@@ -6,6 +6,7 @@ import 'package:e_commerce_app/core/widgets/primay_button_widget.dart';
 import 'package:e_commerce_app/core/widgets/spacing_widgets.dart';
 import 'package:e_commerce_app/features/account/widgets/account_item_widget.dart';
 import 'package:e_commerce_app/features/auth/cubit/auth/auth_cubit.dart';
+import 'package:e_commerce_app/features/my_Details/models/user_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -46,7 +47,7 @@ class AccountScreen extends StatelessWidget {
             iconPath: AppAssets.details,
             title: "My Details",
             onTap: () {
-            
+              context.pushNamed(AppRoutes.myDetailsScreen);
             },
           ),
           Padding(
@@ -167,4 +168,3 @@ class AccountScreen extends StatelessWidget {
               ));
         });
   }
-

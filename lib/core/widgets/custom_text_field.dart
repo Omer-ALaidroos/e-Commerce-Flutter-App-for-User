@@ -8,6 +8,7 @@ class CustomTextField extends StatefulWidget {
   final Widget? prefixIcon;
   final double? width;
   final bool? isPassword;
+  final bool? isPhoneNumber;
    // Added property for obscuring text
   final TextEditingController? controller;
   final String? Function(String?)? validator;
@@ -18,6 +19,7 @@ class CustomTextField extends StatefulWidget {
       this.prefixIcon,
       this.width,
       this.isPassword,
+      this.isPhoneNumber,
       this.controller,
       this.validator,
       }); // Added isObscureText to constructor
@@ -37,6 +39,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
         controller: widget.controller,
         validator: widget.validator,
         autofocus: false,
+        keyboardType: widget.isPhoneNumber == true
+            ? TextInputType.phone
+            : TextInputType.text,
+
         obscureText: widget.isPassword == true ? _isObscured : false,
         cursorColor: AppColors.primaryColor,
         decoration: InputDecoration(

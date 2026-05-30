@@ -8,4 +8,5 @@ class AppRoutes {
   static const String addressScreen = '/addressScreen';
   static const String myCartScreen = '/myCartScreen';
   static const String myOrderScreen = '/MyOrderScreen';
+  static const String myDetailsScreen = '/detailsScreen';
 }

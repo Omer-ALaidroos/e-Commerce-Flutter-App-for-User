@@ -21,18 +21,15 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final formKey = GlobalKey<FormState>();
-  late TextEditingController fullNameController;
-  late TextEditingController emailController;
-  late TextEditingController passwordController;
-  late TextEditingController confirmPasswordController;
+  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    fullNameController = TextEditingController();
-    emailController = TextEditingController();
-    passwordController = TextEditingController();
-    confirmPasswordController = TextEditingController();
   }
 
   @override
@@ -41,6 +38,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     emailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
+    phoneController.dispose();  
     super.dispose();
   }
 
@@ -103,9 +101,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     const SizedBox(height: 16),
                     CustomTextField(
+                      controller: phoneController,
+                      hintText: "Phone",
+                      isPhoneNumber: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Phone number is required.";
+                        }
+                        final phoneRegex = RegExp(r'^(77|78|70|71|73)[0-9]{7}$');
+                        if (!phoneRegex.hasMatch(value)) {
+                          return "Phone must be 9 digits and start with 77, 78, 70, 71, or 73.";
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 16),
+                    CustomTextField(
                       controller: passwordController,
                       hintText: "Password",
                       isPassword: true,
+
                       suffixIcon: const Icon(Icons.visibility_off_outlined),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -137,7 +152,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       suffixIcon: const Icon(Icons.visibility_off_outlined),
                      
                       validator: (value) {
-                        if (value != passwordController.text) {
+                        if (value != passwordController.text || value == null || value.isEmpty) {
                           return "Passwords do not match.";
                         }
                         return null;
@@ -154,6 +169,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   email: emailController.text,
                                   password: passwordController.text,
                                   confirmPassword: confirmPasswordController.text,
+                                  phoneNumber: phoneController.text,
                                 ),
                               );
                         }

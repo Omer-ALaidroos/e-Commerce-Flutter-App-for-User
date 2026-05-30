@@ -14,8 +14,11 @@ class ApiEndpoints {
   static const String checkout = "/api/Order/Create";
   static const String myOrderSummaries = "/api/Order/OrderSummaries";
   static const String orderDetailsByOrderId = "/api/Order/GetById";
-  
-
+  static const String updateFullName = "/api/User/UpdateFullName";
+  static const String updatePhoneNumber = "/api/User/UpdatePhoneNumber";
+  static const String userDetailsById = "/api/User/GetUserById";
+  static const String updatePassword = "/api/Authentication/ChangePassword";
+ 
 
 
 

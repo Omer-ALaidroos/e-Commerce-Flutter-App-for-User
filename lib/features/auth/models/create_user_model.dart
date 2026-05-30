@@ -4,9 +4,11 @@ class CreateUserModel {
   final String email;
   final String password;
   final String confirmPassword;
+  final String phoneNumber;
 
   CreateUserModel({
     required this.email,
+    required this.phoneNumber,
     required this.password,
     required this.confirmPassword,
     required this.fullName,
@@ -19,6 +21,7 @@ class CreateUserModel {
     data['email'] = email;
     data['password'] = password;
     data['confirmPassword'] = confirmPassword;
+    data['phoneNumber'] = phoneNumber;
     return data;
   }
 

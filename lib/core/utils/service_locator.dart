@@ -2,6 +2,9 @@
 import 'package:e_commerce_app/core/networking/dio_helper.dart';
 import 'package:e_commerce_app/core/utils/storage_helper.dart';
 import 'package:e_commerce_app/features/auth/repo/auth_local_data_source.dart';
+import 'package:e_commerce_app/features/my_Details/cubit/edit_cubit.dart';
+import 'package:e_commerce_app/features/my_Details/cubit/user_details_cubit.dart';
+import 'package:e_commerce_app/features/my_Details/repo/user_details_repo.dart';
 import 'package:e_commerce_app/features/order/cubit/order_cubit.dart';
 import 'package:e_commerce_app/features/order/cubit/order_details_cubit.dart';
 import 'package:e_commerce_app/features/order/repo/order_repo.dart';
@@ -36,13 +39,15 @@ void setupServiceLocator() {
   sl.registerLazySingleton(() => CartRepo(sl<DioHelper>()));
   sl.registerLazySingleton(() => RegisterRepo(sl<DioHelper>()));
   sl.registerLazySingleton(() => OrderRepo(sl<DioHelper>()));
-  
+  sl.registerLazySingleton(() => UserDetailsRepo(sl<DioHelper>()));
   // Cubit
   sl.registerFactory(() => AuthCubit(sl<AuthRepo>()));
   sl.registerFactory(() => ProductCubit(sl<HomeRepo>()));
   sl.registerFactory(() => CategoriesCubit(sl<HomeRepo>()));
   sl.registerFactory(() => CartCubit(sl<CartRepo>()));
-  sl.registerFactory(() => RegisterCubit(sl<RegisterRepo>()));
+  sl.registerFactory(() => RegisterCubit( AuthRepo(sl<DioHelper>())));
   sl.registerFactory(() => OrderCubit(sl<OrderRepo>()));
   sl.registerFactory(() => OrderDetailsCubit(sl<OrderRepo>()));
+  sl.registerFactory(() => UserDetailsCubit(sl<UserDetailsRepo>()));
+  sl.registerFactory(() => EditCubit(sl<UserDetailsRepo>()));
 }

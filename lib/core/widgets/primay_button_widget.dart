@@ -60,7 +60,7 @@ class PrimayButtonWidget extends StatelessWidget {
             buttonText ?? "",
             style: TextStyle(
                 color: textColor ?? Colors.white,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
                 fontSize: fontSize ?? 16.sp),
           ),
           trailingIcon != null ? const WidthSpace(8) : const SizedBox.shrink(),

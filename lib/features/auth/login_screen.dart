@@ -148,7 +148,20 @@ class _LoginScreenState extends State<LoginScreen> {
                         return null;
                       },
                     ),
-                    const HeightSpace(55),
+                    const HeightSpace(8),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {
+                          context.pushNamed(AppRoutes.forgetPasswordEmailRoute);
+                        },
+                        child: Text(
+                          "Forgot Password?",
+                          style: AppStyles.black16w500Style.copyWith(fontSize: 14.sp),
+                        ),
+                      ),
+                    ),
+                    const HeightSpace(32),
                     PrimayButtonWidget(
                       buttonText: "Sign in",
                       onPress: () {

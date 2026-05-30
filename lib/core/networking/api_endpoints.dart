@@ -18,7 +18,14 @@ class ApiEndpoints {
   static const String updatePhoneNumber = "/api/User/UpdatePhoneNumber";
   static const String userDetailsById = "/api/User/GetUserById";
   static const String updatePassword = "/api/Authentication/ChangePassword";
- 
+  static const String forgotPassword = "/api/Authentication/ForgotPassword";
+  static const String verifyResetCode = "/api/Authentication/VerifyOTPCode";
+  static const String resetPassword = "/api/Authentication/ResetPassword";
+
+
+
+
+
 
 
 

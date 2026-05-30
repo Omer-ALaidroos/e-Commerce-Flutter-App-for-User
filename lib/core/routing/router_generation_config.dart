@@ -5,10 +5,12 @@ import 'package:e_commerce_app/features/Cart/cubit/cart_cubit.dart';
 import 'package:e_commerce_app/features/Cart/my_cart_screen.dart';
 import 'package:e_commerce_app/features/Product%20details%20screen/product_details_screen.dart';
 import 'package:e_commerce_app/features/address/address_screen.dart';
+import 'package:e_commerce_app/features/forgetPassword/forget_password_new_password_screen.dart';
 import 'package:e_commerce_app/features/my_Details/details_screen.dart';
 import 'package:e_commerce_app/features/my_Details/cubit/user_details_cubit.dart';
 import 'package:e_commerce_app/features/my_Details/models/user_details.dart';
 import 'package:e_commerce_app/features/my_Details/cubit/edit_cubit.dart';
+import 'package:e_commerce_app/features/forgetPassword/cubit/forget_password_cubit.dart';
 import 'package:e_commerce_app/features/auth/cubit/register/register_cubit.dart';
 import 'package:e_commerce_app/features/auth/cubit/auth/auth_cubit.dart';
 import 'package:e_commerce_app/features/auth/login_screen.dart';
@@ -20,6 +22,8 @@ import 'package:e_commerce_app/features/order/models/order_model.dart';
 import 'package:e_commerce_app/features/order/my_order_screen.dart';
 import 'package:e_commerce_app/features/order/order_detailes_screen.dart';
 import 'package:e_commerce_app/features/main%20screen/main_screen.dart';
+import 'package:e_commerce_app/features/forgetPassword/forget_password_email_screen.dart';
+import 'package:e_commerce_app/features/forgetPassword/forget_password_otp_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -104,5 +108,35 @@ class RouterGenerationConfig {
           );
         },
       ),
+
+        GoRoute(
+          name: AppRoutes.forgetPasswordEmailRoute,
+          path: AppRoutes.forgetPasswordEmailRoute,
+          builder: (context, state) => BlocProvider(
+            create: (context) => ForgetPasswordCubit(sl()),
+            child: const ForgetPasswordEmailScreen(),
+          ),
+        ),
+        GoRoute(
+          name: AppRoutes.forgetPasswordOtpRoute,
+          path: AppRoutes.forgetPasswordOtpRoute,
+          builder: (context, state) {
+            final email = state.extra as String?;
+            return BlocProvider(
+              create: (context) => ForgetPasswordCubit(sl()),
+              child: ForgetPasswordOTPScreen(email: email),
+            );
+          },
+        ),
+        GoRoute(
+          name: AppRoutes.forgetPasswordNewPasswordRoute,   
+          path: AppRoutes.forgetPasswordNewPasswordRoute,
+          builder: (context, state) => BlocProvider(
+            create: (context) => ForgetPasswordCubit(sl()),
+            child: const ForgetPasswordNewPasswordScreen(),
+          ),
+        ),  
+        
+
   ]);
 }

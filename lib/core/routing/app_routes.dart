@@ -9,4 +9,7 @@ class AppRoutes {
   static const String myCartScreen = '/myCartScreen';
   static const String myOrderScreen = '/MyOrderScreen';
   static const String myDetailsScreen = '/detailsScreen';
+ static const String forgetPasswordEmailRoute = '/forgetPasswordEmail';
+  static const String forgetPasswordOtpRoute = '/forgetPasswordOtp';
+  static const String forgetPasswordNewPasswordRoute = '/forgetPasswordNewPassword';
 }

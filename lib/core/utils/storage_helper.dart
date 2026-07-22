@@ -12,13 +12,18 @@ class StorageHelper {
     await storage.write(key: 'refreshToken', value: refreshToken);
   }
   Future<String?> getRefreshToken() async {
-    return await storage.read(key: 'refreshToken') ?? "";
+    return await storage.read(key: 'refreshToken');
   }
   Future<String?> getToken() async {
-    return await storage.read(key: 'token') ?? "";
+    return await storage.read(key: 'token');
   }
 
   Future removeToken() async {
     await storage.delete(key: 'token');
   }
+
+  Future clear() async {
+    await storage.deleteAll();
+  }
+  
 }

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:e_commerce_app/core/networking/api_endpoints.dart';
+import 'package:e_commerce_app/core/networking/refresh_token_interceptor.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class DioHelper {
@@ -14,6 +15,7 @@ class DioHelper {
         receiveDataWhenStatusError: true,
       ),
     );
+    dio!.interceptors.add(RefreshTokenInterceptor(dio!));
     dio!.interceptors.add(PrettyDioLogger(
       requestHeader: true,
       requestBody: true,
@@ -24,15 +26,11 @@ class DioHelper {
   getRequest({
     required String endPoint,
     Map<String, dynamic>? query,
-    String? token,
   }) async {
     try {
       Response response = await dio!.get(
         endPoint,
         queryParameters: query,
-        options: Options(
-          headers: token != null ? {'Authorization': 'Bearer $token'} : null,
-        ),
       );
       return response;
     } catch (e) {
@@ -44,7 +42,6 @@ class DioHelper {
     required String endPoint,
     Map<String, dynamic>? data,
     Map<String, dynamic>? query,
-    String? token,
   }) async {
     try {
       final Response response = await dio!.post(
@@ -53,7 +50,6 @@ class DioHelper {
         queryParameters: query,
         options: Options(
           headers: {
-            if (token != null) 'Authorization': 'Bearer $token',
             'Content-Type': 'application/json',
           },
         ),
@@ -68,7 +64,6 @@ class DioHelper {
     required String endPoint,
     Map<String, dynamic>? data,
     Map<String, dynamic>? query,
-    String? token,
   }) async {
     try {
       final Response response = await dio!.put(
@@ -77,7 +72,6 @@ class DioHelper {
         queryParameters: query,
         options: Options(
           headers: {
-            if (token != null) 'Authorization': 'Bearer $token',
           },
         ),
       );
@@ -90,14 +84,12 @@ class DioHelper {
 
   deleteRequest({
     required String endPoint,
-    String? token,
   }) async {
     try {
       final Response response = await dio!.delete(
         endPoint,
         options: Options(
           headers: {
-            if (token != null) 'Authorization': 'Bearer $token',
           },
         ),
       );

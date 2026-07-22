@@ -3,9 +3,15 @@ import 'package:e_commerce_app/core/routing/app_routes.dart';
 import 'package:e_commerce_app/core/utils/service_locator.dart';
 import 'package:e_commerce_app/features/Cart/cubit/cart_cubit.dart';
 import 'package:e_commerce_app/features/Cart/my_cart_screen.dart';
+import 'package:e_commerce_app/features/FAQ/faq_screen.dart';
+import 'package:e_commerce_app/features/Favorite%20screen/favorites_screen.dart';
+import 'package:e_commerce_app/features/Product%20details%20screen/cubit/review_cubit.dart';
 import 'package:e_commerce_app/features/Product%20details%20screen/product_details_screen.dart';
+import 'package:e_commerce_app/features/address/address_cubit.dart';
 import 'package:e_commerce_app/features/address/address_screen.dart';
 import 'package:e_commerce_app/features/forgetPassword/forget_password_new_password_screen.dart';
+import 'package:e_commerce_app/features/helpCenter/help_center_screen.dart';
+import 'package:e_commerce_app/features/Product%20details%20screen/cubit/product_details_cubit.dart';
 import 'package:e_commerce_app/features/my_Details/details_screen.dart';
 import 'package:e_commerce_app/features/my_Details/cubit/user_details_cubit.dart';
 import 'package:e_commerce_app/features/my_Details/models/user_details.dart';
@@ -26,7 +32,6 @@ import 'package:e_commerce_app/features/forgetPassword/forget_password_email_scr
 import 'package:e_commerce_app/features/forgetPassword/forget_password_otp_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
 class RouterGenerationConfig {
   static GoRouter goRouter =
       GoRouter(initialLocation: AppRoutes.loginScreen, routes: [
@@ -58,22 +63,37 @@ class RouterGenerationConfig {
       name: AppRoutes.productDetailsScreen,
       path: AppRoutes.productDetailsScreen,
       builder: (context, state) {
-        final product = state.extra as ProductModel;
-        return BlocProvider(
-        create: (context) => CartCubit(sl()),
-        child: ProductDetailsScreen(product: product),
-        ) ;
+        final productId = state.extra as int;
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: sl<CartCubit>()),
+            BlocProvider(
+                create: (context) =>
+                    sl<ProductDetailsCubit>()..fetchProductDetails(productId)),
+            BlocProvider(
+                create: (context) => sl<ReviewCubit>()..checkCanReview(productId)),
+          ],
+          child: ProductDetailsScreen(productId: productId),
+        );
       } 
     ),
     GoRoute(
       name: AppRoutes.addressScreen,
       path: AppRoutes.addressScreen,
-      builder: (context, state) => AddressScreen(),
+      builder: (context, state) => BlocProvider(
+        create: (context) => AddressCubit(sl()),
+        child: const AddressScreen(),
+      ),
     ),
       GoRoute(
         name: AppRoutes.myCartScreen,
         path: AppRoutes.myCartScreen,
         builder: (context, state) => MyCartScreen(),
+      ),
+      GoRoute(
+        name: AppRoutes.favoritesScreen,
+        path: AppRoutes.favoritesScreen,
+        builder: (context, state) => const FavoritesScreen(),
       ),
       GoRoute(
         name: AppRoutes.orderDetailesScreen,
@@ -135,7 +155,17 @@ class RouterGenerationConfig {
             create: (context) => ForgetPasswordCubit(sl()),
             child: const ForgetPasswordNewPasswordScreen(),
           ),
-        ),  
+        ), 
+          GoRoute(
+            name: AppRoutes.faqScreen,
+            path: AppRoutes.faqScreen,
+            builder: (context, state) =>const FAQScreen(),
+            ),
+          GoRoute(
+            name: AppRoutes.helpCenterScreen,
+            path: AppRoutes.helpCenterScreen,
+            builder: (context, state) => const HelpCenterScreen(),
+          ),
         
 
   ]);

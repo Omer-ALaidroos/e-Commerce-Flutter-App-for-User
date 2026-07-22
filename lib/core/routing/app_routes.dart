@@ -12,4 +12,8 @@ class AppRoutes {
  static const String forgetPasswordEmailRoute = '/forgetPasswordEmail';
   static const String forgetPasswordOtpRoute = '/forgetPasswordOtp';
   static const String forgetPasswordNewPasswordRoute = '/forgetPasswordNewPassword';
+  static const String faqScreen = '/faqScreen';
+  static const String helpCenterScreen = '/helpCenterScreen';
+  static const String favoritesScreen = '/favoritesScreen';
+
 }

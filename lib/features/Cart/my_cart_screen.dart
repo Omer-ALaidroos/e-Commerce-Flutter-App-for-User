@@ -50,12 +50,13 @@ class _MyCartScreenState extends State<MyCartScreen> {
               "Order Created Successfully!",
               type: AnimatedSnackBarType.success,
             ).show(context);
-           
+          // Refresh cart after successful checkout
           } else if (state is ErrorCheckout) {
             AnimatedSnackBar.material(
               state.message,
               type: AnimatedSnackBarType.error,
             ).show(context);
+            context.read<CartCubit>().fetchCarts();
           }
         },
         child: BlocBuilder<CartCubit, CartState>(
@@ -81,59 +82,55 @@ class _MyCartScreenState extends State<MyCartScreen> {
             double totalPrice = state.cartItems.fold(
                 0, (sum, item) => sum + ((item.price ?? 0) * (item.quantity ?? 1)));
 
-            return Stack(
+            return Column(
               children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.w),
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.only(bottom: 180.h), // Add padding to prevent content from being hidden by the bottom bar
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const HeightSpace(20),
-                        ...state.cartItems.map((cartItem) {
-                          return CartItemWidget(cartItem: cartItem);
-                        }).toList(), // Ensure map returns a List
-                        const HeightSpace(20),
-                      ],
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24.w),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const HeightSpace(20),
+                          ...state.cartItems.map((cartItem) {
+                            return CartItemWidget(cartItem: cartItem);
+                          }), // Ensure map returns a List
+                          const HeightSpace(20),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    color: Colors.white, // Background color for the bottom section
-                    padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Divider(),
-                        const HeightSpace(10),
-                        TotalPriceWidget(
-                            title: "Total", 
-                            price: "\$${totalPrice.toStringAsFixed(2)}"),
-                        const HeightSpace(20),
-                        state is Checkout 
-                        ? const Center(child: CircularProgressIndicator())
-                        : PrimayButtonWidget(
-                            buttonText: "Confirm Order",
-                            trailingIcon: Icon(
-                              Icons.check_circle_outline,
-                              color: Colors.white,
-                              size: 16.sp,
+                Container(
+                  color: Colors.white, // Background color for the bottom section
+                  padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Divider(),
+                      const HeightSpace(10),
+                      TotalPriceWidget(
+                          title: "Total",
+                          price: "\$${totalPrice.toStringAsFixed(2)}"),
+                      const HeightSpace(20),
+                      state is Checkout
+                          ? const Center(child: CircularProgressIndicator())
+                          : PrimayButtonWidget(
+                              buttonText: "Checkout",
+                              trailingIcon: Icon(
+                                Icons.check_circle_outline,
+                                color: Colors.white,
+                                size: 16.sp,
+                              ),
+                              onPress: () {
+                                // Creating order with placeholder values for now
+                                context.read<CartCubit>().checkout(
+                                      shippingAddressId: 2,
+                                      payment: 1,
+                                    );
+                              },
                             ),
-                            onPress: () {
-                              // Creating order with placeholder values for now
-                              context.read<CartCubit>().checkout(
-                                    shippingAddressId: 2, 
-                                    payment: 1, 
-                                  );
-                            },
-                          ),
-                      ],
-                    ),
+                    ],
                   ),
                 ),
               ],

@@ -17,11 +17,9 @@ class UserDetailsRepo {
     required String fullName,
   }) async {
     try {
-      final token = await sl<StorageHelper>().getToken();
       final response = await dioHelper.putRequest(
         endPoint: ApiEndpoints.updateFullName,
         query: { "fullName": fullName },
-        token: token,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -43,11 +41,9 @@ class UserDetailsRepo {
     required String phoneNumber,
   }) async {
     try {
-      final token = await sl<StorageHelper>().getToken();
       final response = await dioHelper.putRequest(
         endPoint: ApiEndpoints.updatePhoneNumber,
         query: { "phoneNumber": phoneNumber },
-        token: token,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -67,7 +63,6 @@ class UserDetailsRepo {
     required String confirmPassword,
   }) async {
     try {
-      final token = await sl<StorageHelper>().getToken();
       final response = await dioHelper.postRequest(
         endPoint: ApiEndpoints.updatePassword,
         data: {
@@ -75,7 +70,6 @@ class UserDetailsRepo {
           "NewPassword": newPassword,
           "ConfirmPassword": confirmPassword,
         },
-        token: token,
       );
 
       // If the request is successful (2xx status code), extract the message.
@@ -98,11 +92,9 @@ class UserDetailsRepo {
 
   Future<UserDetails> getUserDetails() async {
     try {
-      final token = await sl<StorageHelper>().getToken();
       final response = await dioHelper.getRequest(
         endPoint: ApiEndpoints.userDetailsById     
-      , token: token,
-      );
+      ); // The interceptor will add the token
 
       if (response.statusCode == 200) {
         return UserDetails.fromJson(response.data);

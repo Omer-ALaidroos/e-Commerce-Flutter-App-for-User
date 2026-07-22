@@ -73,20 +73,18 @@ class AuthRepo {
         );
 
         if (loginResponseModel.token != null) {
-          log(LoginResponseModel.fromJson(response.data).toString());
+          log("Login Success: ${loginResponseModel.token}");
 
-          {
-            await sl<StorageHelper>().saveToken(loginResponseModel.token!);
-            if (loginResponseModel.userId != null) {
-              await sl<AuthLocalDataSource>().saveUserId(
-                loginResponseModel.userId!,
-              );
-            }
-            if (loginResponseModel.refreshToken != null) {
-              await sl<StorageHelper>().saveRefreshToken(
-                loginResponseModel.refreshToken!,
-              );
-            }
+          await sl<StorageHelper>().saveToken(loginResponseModel.token!);
+          if (loginResponseModel.userId != null) {
+            await sl<AuthLocalDataSource>().saveUserId(
+              loginResponseModel.userId!,
+            );
+          }
+          if (loginResponseModel.refreshToken != null) {
+            await sl<StorageHelper>().saveRefreshToken(
+              loginResponseModel.refreshToken!,
+            );
           }
 
           return Right(loginResponseModel);
@@ -114,29 +112,5 @@ class AuthRepo {
       }
       return Left(error.toString());
     }
-  }
-}
-
-Future<String?> refreshAccessToken() async {
-  final refreshToken = await sl<StorageHelper>().getRefreshToken();
-  if (refreshToken == null) return null;
-
-  try {
-    final response = await Dio().post(
-      ApiEndpoints.refreshToken,
-      data: {'refreshToken': refreshToken},
-    );
-
-    if (response.statusCode == 200) {
-      final newAccessToken = response.data['Token'];
-      final newRefreshToken = response.data['Refreshtoken'];
-
-      await sl<StorageHelper>().saveToken(newAccessToken);
-      await sl<StorageHelper>().saveRefreshToken(newRefreshToken);
-      return newAccessToken;
-    }
-  } catch (e) {
-    // Handle error (e.g., refresh token expired)
-    return null;
   }
 }

@@ -12,6 +12,8 @@ class CustomTextField extends StatefulWidget {
    // Added property for obscuring text
   final TextEditingController? controller;
   final String? Function(String?)? validator;
+  final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
   const CustomTextField(
       {super.key,
       this.hintText,
@@ -22,6 +24,8 @@ class CustomTextField extends StatefulWidget {
       this.isPhoneNumber,
       this.controller,
       this.validator,
+      this.onChanged,
+      this.onSubmitted,
       }); // Added isObscureText to constructor
 
   @override
@@ -39,6 +43,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
         controller: widget.controller,
         validator: widget.validator,
         autofocus: false,
+        onChanged: widget.onChanged,
+        onFieldSubmitted: widget.onSubmitted,
         keyboardType: widget.isPhoneNumber == true
             ? TextInputType.phone
             : TextInputType.text,

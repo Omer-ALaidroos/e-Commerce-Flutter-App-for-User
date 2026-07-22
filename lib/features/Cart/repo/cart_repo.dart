@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dio/dio.dart';
 import 'package:dartz/dartz.dart';
 import 'package:e_commerce_app/core/networking/api_endpoints.dart';
 import 'package:e_commerce_app/core/networking/dio_helper.dart';
@@ -9,16 +10,14 @@ import 'package:e_commerce_app/features/Cart/models/cart_item_model.dart';
 
 class CartRepo {
   final DioHelper _dioHelper;
- Future<String?> _getToken() async {
-    return await sl<StorageHelper>().getToken();
-  }
+
   CartRepo(this._dioHelper);
 
   Future<Either<String, List<CartItemModel>>> getUserCart() async {
     try {
-      final token = await _getToken();
+   
       final response =
-          await _dioHelper.getRequest(endPoint: "${ApiEndpoints.baseUrl}${ApiEndpoints.myCarts}", token: token);
+          await _dioHelper.getRequest(endPoint: ApiEndpoints.myCarts);
       if (response.statusCode == 200) {
         if (response.data == null || (response.data is List && (response.data as List).isEmpty)) {
           return const Right([]);
@@ -50,9 +49,9 @@ class CartRepo {
       required int productId,
       required int quantity}) async {
     try {
-      final token = await _getToken();
+   
       final response = await _dioHelper.postRequest(
-          endPoint: "${ApiEndpoints.baseUrl}${ApiEndpoints.addToCart}", token: token, data: {
+          endPoint: ApiEndpoints.addToCart, data: {
        
         "productId": productId,
         "quantity": quantity,
@@ -70,11 +69,11 @@ class CartRepo {
 
   Future<Either<String, String>> incrementQuantity(int cartItemId) async {
     try {
-      final token = await _getToken();
+      
       final response = await _dioHelper.putRequest(
-        endPoint: "${ApiEndpoints.baseUrl}${ApiEndpoints.incrementCartItem}",
+        endPoint: ApiEndpoints.incrementCartItem,
         query: {"cartItemId": cartItemId},
-        token: token,
+        
       );
 
       if (response.statusCode == 200) {
@@ -90,11 +89,11 @@ class CartRepo {
 
   Future<Either<String, String>> decrementQuantity(int cartItemId) async {
     try {
-      final token = await _getToken();
+      
       final response = await _dioHelper.putRequest(
-        endPoint: "${ApiEndpoints.baseUrl}${ApiEndpoints.decrementCartItem}",
+        endPoint: ApiEndpoints.decrementCartItem,
         query: {"cartItemId": cartItemId},
-        token: token,
+       
       );
 
       if (response.statusCode == 200) {
@@ -109,11 +108,11 @@ class CartRepo {
 
   Future<Either<String, String>> removeCartItem(int cartItemId) async {
     try {
-      final token = await _getToken();
+   
       final response = await _dioHelper.deleteRequest(
-        endPoint: "${ApiEndpoints.baseUrl}${ApiEndpoints.removeCartItem}/$cartItemId",
+        endPoint: "${ApiEndpoints.removeCartItem}/$cartItemId",
        
-        token: token,
+     
       );
 
       if (response.statusCode == 200) {
@@ -131,10 +130,10 @@ class CartRepo {
   }) async {
     try {
       log("Initiating checkout with shippingAddressId: $shippingAddressId and paymentMethodId: $payment");
-      final token = await _getToken();
+     
       final response = await _dioHelper.postRequest(
-        endPoint: "${ApiEndpoints.baseUrl}${ApiEndpoints.checkout}",
-        token: token,
+        endPoint: ApiEndpoints.checkout,
+       
         data: {
           "shippingAddressId": shippingAddressId,
           "paymentMethodId": payment
@@ -148,7 +147,9 @@ class CartRepo {
       }
     } catch (e) {
       log("Error in checkout: ${e.toString()}");
-
+      if (e is DioException) {
+        return Left(e.response?.data['message'] ?? e.message.toString());
+      }
       return Left(e.toString());
     }
   }

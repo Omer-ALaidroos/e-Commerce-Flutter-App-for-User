@@ -2,13 +2,13 @@
 import 'package:e_commerce_app/core/styling/app_colors.dart';
 import 'package:e_commerce_app/core/utils/service_locator.dart';
 import 'package:e_commerce_app/features/Cart/my_cart_screen.dart';
+import 'package:e_commerce_app/features/Favorite%20screen/favorites_screen.dart';
 import 'package:e_commerce_app/features/account/account_screen.dart';
 import 'package:e_commerce_app/features/home/cubit/categories_cubit.dart';
+import 'package:e_commerce_app/features/home/cubit/favorite_cubit.dart';
 import 'package:e_commerce_app/features/home/cubit/product_cubit.dart';
 import 'package:e_commerce_app/features/home/home_screen.dart';
 import 'package:e_commerce_app/features/auth/cubit/auth/auth_cubit.dart';
-import 'package:e_commerce_app/features/order/cubit/order_cubit.dart';
-import 'package:e_commerce_app/features/order/my_order_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -32,10 +32,14 @@ class _MainScreenState extends State<MainScreen> {
         BlocProvider(
           create: (context) => sl<CategoriesCubit>(),
         ),
+        BlocProvider(
+          create: (context) => sl<FavoriteCubit>(),
+        ),
       ],
       child: HomeScreen(),
     ),
     MyCartScreen(),
+    const FavoritesScreen(),
   
     BlocProvider(
       create: (context) => sl<AuthCubit>(),
@@ -74,6 +78,12 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 label: "Cart"),
 
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.favorite,
+                  size: 30.sp,
+                ),
+                label: "Favorites"),
             BottomNavigationBarItem(
                 icon: Icon(
                   Icons.person_3_outlined,

@@ -94,16 +94,14 @@ class OrderRepo {
 
   OrderRepo(this._dioHelper);
 
-  Future<String?> _getToken() async {
-    return await sl<StorageHelper>().getToken();
-  }
+ 
 
   Future<Either<String, List<OrderSummaryModel>>> getOrderSummaries() async {
     try {
-      final token = await _getToken();
+     
       final response = await _dioHelper.getRequest(
         endPoint: ApiEndpoints.myOrderSummaries,
-        token: token,
+       
       );
       if (response.statusCode == 200 && response.data != null) {
         final List<dynamic> dataList = response.data;
@@ -121,10 +119,10 @@ class OrderRepo {
 
   Future<Either<String, OrderModel>> getOrderbyOrderId(int orderId) async {
     try {
-      final token = await _getToken();
+     
       final response = await _dioHelper.getRequest(
         endPoint: "${ApiEndpoints.orderDetailsByOrderId}/$orderId",
-        token: token,
+       
       );
       if (response.statusCode == 200 && response.data != null) {
         OrderModel order = OrderModel.fromJson(response.data);

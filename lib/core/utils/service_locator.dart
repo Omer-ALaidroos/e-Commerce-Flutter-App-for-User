@@ -1,9 +1,18 @@
 
 import 'package:e_commerce_app/core/networking/dio_helper.dart';
 import 'package:e_commerce_app/core/utils/storage_helper.dart';
+import 'package:e_commerce_app/features/Favorite%20screen/cubit/my_favorites_cubit.dart';
+import 'package:e_commerce_app/features/address/address_cubit.dart';
+import 'package:e_commerce_app/features/address/address_repo.dart';
 import 'package:e_commerce_app/features/auth/repo/auth_local_data_source.dart';
 import 'package:e_commerce_app/features/forgetPassword/cubit/forget_password_cubit.dart';
 import 'package:e_commerce_app/features/forgetPassword/repo/forget_password_repo.dart';
+import 'package:e_commerce_app/features/Product%20details%20screen/cubit/product_details_cubit.dart';
+import 'package:e_commerce_app/features/Product%20details%20screen/cubit/review_cubit.dart';
+import 'package:e_commerce_app/features/Product%20details%20screen/repo/product_details_repo.dart';
+import 'package:e_commerce_app/features/Product%20details%20screen/repo/review_repo.dart';
+import 'package:e_commerce_app/features/home/cubit/favorite_cubit.dart';
+import 'package:e_commerce_app/features/Favorite%20screen/repo/favorite_repo.dart';
 import 'package:e_commerce_app/features/my_Details/cubit/edit_cubit.dart';
 import 'package:e_commerce_app/features/my_Details/cubit/user_details_cubit.dart';
 import 'package:e_commerce_app/features/my_Details/repo/user_details_repo.dart';
@@ -43,7 +52,10 @@ void setupServiceLocator() {
   sl.registerLazySingleton(() => OrderRepo(sl<DioHelper>()));
   sl.registerLazySingleton(() => UserDetailsRepo(sl<DioHelper>()));
   sl.registerLazySingleton(() => ForgetPasswordRepo(sl<DioHelper>()));
-
+  sl.registerLazySingleton(() => AddressRepo(sl<DioHelper>()));
+  sl.registerLazySingleton(() => ProductDetailsRepo(sl<DioHelper>()));
+  sl.registerLazySingleton(() => ReviewRepository(sl<DioHelper>()));
+  sl.registerLazySingleton(() => FavoriteRepo(sl<DioHelper>()));
 
   // Cubit
   sl.registerFactory(() => AuthCubit(sl<AuthRepo>()));
@@ -56,4 +68,10 @@ void setupServiceLocator() {
   sl.registerFactory(() => UserDetailsCubit(sl<UserDetailsRepo>()));
   sl.registerFactory(() => EditCubit(sl<UserDetailsRepo>()));
   sl.registerFactory(() => ForgetPasswordCubit(sl<ForgetPasswordRepo>()));
-}
+  sl.registerFactory(() => AddressCubit(sl<AddressRepo>()));
+  sl.registerFactory(() => ProductDetailsCubit(sl<ProductDetailsRepo>()));
+  sl.registerFactory(() => ReviewCubit(sl<ReviewRepository>()));
+  sl.registerFactory(() => FavoriteCubit(sl<FavoriteRepo>()));
+  sl.registerFactory(() => MyFavoritesCubit(sl<FavoriteRepo>()));
+
+  }

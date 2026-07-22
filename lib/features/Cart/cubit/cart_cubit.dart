@@ -17,6 +17,7 @@ class CartCubit extends Cubit<CartState> {
     emit(LoadingCarts());
     log("Fetching carts for userId after loading carts: ");
     final res = await _cartRepo.getUserCart();
+    if (isClosed) return;
   log("Result of fetching carts for userId : $res");
     res.fold((error) {
       emit(ErrorGettingCarts(error));
@@ -31,6 +32,7 @@ class CartCubit extends Cubit<CartState> {
         productId: productId,
         quantity: quantity);
 
+    if (isClosed) return;
     res.fold((error) {
       emit(ErrorAddingToCart(error));
     }, (cartItem) {
@@ -40,6 +42,7 @@ class CartCubit extends Cubit<CartState> {
 
   removeCartItem(int cartItemId) async {
     final res = await _cartRepo.removeCartItem(cartItemId);
+    if (isClosed) return;
     res.fold((error) {
       emit(ErrorGettingCarts(error)); 
     }, (successMessage) {
@@ -49,6 +52,7 @@ class CartCubit extends Cubit<CartState> {
 
   incrementQuantity(int cartItemId) async {
     final res = await _cartRepo.incrementQuantity(cartItemId);
+    if (isClosed) return;
     res.fold((error) {
       emit(ErrorGettingCarts(error));
     }, (success) {
@@ -58,6 +62,7 @@ class CartCubit extends Cubit<CartState> {
 
   decrementQuantity(int cartItemId) async {
     final res = await _cartRepo.decrementQuantity(cartItemId);
+    if (isClosed) return;
     res.fold((error) {
       emit(ErrorGettingCarts(error));
     }, (success) {
@@ -77,6 +82,9 @@ class CartCubit extends Cubit<CartState> {
       shippingAddressId: shippingAddressId,
       payment: payment
     );
+     
+      
+    if (isClosed) return;
     res.fold((error) {
       emit(ErrorCheckout(error));
     }, (successMessage) {

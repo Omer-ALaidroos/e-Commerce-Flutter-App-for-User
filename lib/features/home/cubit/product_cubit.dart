@@ -30,4 +30,22 @@ class ProductCubit extends Cubit<ProductState> {
       emit(ProductLoaded(right));
     });
   }
+
+  void searchProducts(String name) async {
+    final trimmedName = name.trim();
+    if (trimmedName.isEmpty) {
+      emit(ProductError('Search term cannot be empty.'));
+      return;
+    }
+
+    emit(ProductLoading());
+
+    final res = await _homeRepo.searchProducts(trimmedName);
+
+    res.fold((error) {
+      emit(ProductError(error));
+    }, (right) {
+      emit(ProductLoaded(right));
+    });
+  }
 }

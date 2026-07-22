@@ -68,7 +68,9 @@ class AccountScreen extends StatelessWidget {
           AccountItemWidget(
             iconPath: AppAssets.question,
             title: "FAQ",
-            onTap: () {},
+            onTap: () {
+              GoRouter.of(context).pushNamed(AppRoutes.faqScreen);
+            },
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -77,7 +79,9 @@ class AccountScreen extends StatelessWidget {
           AccountItemWidget(
             iconPath: AppAssets.help,
             title: "Help Center",
-            onTap: () {},
+            onTap: () {
+              GoRouter.of(context).pushNamed(AppRoutes.helpCenterScreen);
+            },
           ),
           const HeightSpace(16),
           Divider(

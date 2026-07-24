@@ -1,5 +1,6 @@
 
 import 'package:e_commerce_app/core/networking/dio_helper.dart';
+import 'package:e_commerce_app/core/services/stripe_payment_service.dart';
 import 'package:e_commerce_app/core/utils/storage_helper.dart';
 import 'package:e_commerce_app/features/Favorite%20screen/cubit/my_favorites_cubit.dart';
 import 'package:e_commerce_app/features/address/address_cubit.dart';
@@ -43,6 +44,7 @@ void setupServiceLocator() {
   sl.registerLazySingleton(() => const FlutterSecureStorage());
   sl.registerLazySingleton(() => StorageHelper());
   sl.registerLazySingleton(() => AuthLocalDataSource(sl<FlutterSecureStorage>()));
+  sl.registerLazySingleton(() => StripePaymentService());
 
   // Repos
   sl.registerLazySingleton(() => AuthRepo(sl<DioHelper>()));

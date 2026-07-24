@@ -12,9 +12,10 @@ class ApiEndpoints {
   static const String removeCartItem = "/api/Cart/remove";
   static const String incrementCartItem = "/api/Cart/increment-quentitey";
   static const String decrementCartItem = "/api/Cart/decrement-quentitey";
-  static const String checkout = "/api/Order/Create";
+  static const String checkout = "/api/Order/Checkout";
   static const String myOrderSummaries = "/api/Order/OrderSummaries";
   static const String orderDetailsByOrderId = "/api/Order/GetById";
+  static const String getOrderStatusByOrderId = "/api/Order/GetStatusByOrderId";
   static const String updateFullName = "/api/User/UpdateFullName";
   static const String updatePhoneNumber = "/api/User/UpdatePhoneNumber";
   static const String userDetailsById = "/api/User/GetUserById";
@@ -35,7 +36,6 @@ class ApiEndpoints {
   static const String addFavorite = "/api/Product/AddToFavorite";
   static const String removeFavorite = "/api/Product/RemoveFromFavorite";
   static const String myFavorites = "/api/Product/MyFavorites";
-
 
 
 }

@@ -5,6 +5,7 @@ import 'package:e_commerce_app/features/order/cubit/order_details_cubit.dart';
 import 'package:e_commerce_app/features/order/cubit/order_details_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:e_commerce_app/features/order/models/order_status.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
@@ -69,7 +70,7 @@ class OrderDetailesScreen extends StatelessWidget {
                                 width: 70.w,
                                 height: 70.h,
                                 fit: BoxFit.cover,
-                                imageUrl: "${ApiEndpoints.baseUrl}/${item.product.imageUrl}",
+                                imageUrl: "${ApiEndpoints.baseUrl}/${item.product.primaryImageUrl}",
                               ),
                             ),
                             SizedBox(width: 12.w),
@@ -196,24 +197,35 @@ class OrderDetailesScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusBadge(String status) {
+  Widget _buildStatusBadge(OrderStatus status) {
+    String label = status.displayName();
     Color color;
-    switch (status.toLowerCase()) {
-      case 'pending':
+    switch (status) {
+      case OrderStatus.PendingPayment:
         color = Colors.orange;
         break;
-      case 'completed':
+      case OrderStatus.Paid:
         color = Colors.green;
         break;
-      case 'cancelled':
+      case OrderStatus.Processing:
+        color = Colors.orangeAccent;
+        break;
+      case OrderStatus.Shipped:
+        color = Colors.blue;
+        break;
+      case OrderStatus.Delivered:
+        color = Colors.green;
+        break;
+      case OrderStatus.Cancelled:
         color = Colors.red;
         break;
-      case 'shipped':
-        color = Colors.blue;
+      case OrderStatus.PaymentFailed:
+        color = Colors.redAccent;
         break;
       default:
         color = Colors.grey;
     }
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -222,7 +234,7 @@ class OrderDetailesScreen extends StatelessWidget {
         border: Border.all(color: color.withOpacity(0.5)),
       ),
       child: Text(
-        status.toUpperCase(),
+        label.toUpperCase(),
         style: TextStyle(
           fontSize: 12.sp,
           fontWeight: FontWeight.bold,

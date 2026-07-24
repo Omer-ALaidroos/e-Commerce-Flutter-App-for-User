@@ -1,16 +1,19 @@
 
+import 'dart:async';
 import 'dart:developer';
 
+import 'package:e_commerce_app/core/services/stripe_payment_service.dart';
+import 'package:e_commerce_app/core/utils/service_locator.dart';
 import 'package:e_commerce_app/features/Cart/cubit/cart_state.dart';
 import 'package:e_commerce_app/features/Cart/models/cart_item_model.dart';
 import 'package:e_commerce_app/features/Cart/repo/cart_repo.dart';
-import 'package:e_commerce_app/features/home/models/products_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CartCubit extends Cubit<CartState> {
   CartCubit(this._cartRepo) : super(InitialCartState());
 
   final CartRepo _cartRepo;
+  final StripePaymentService _stripeService = sl<StripePaymentService>();
 
   fetchCarts() async {
     log("Fetching carts for userId before loading carts: ");
@@ -70,7 +73,15 @@ class CartCubit extends Cubit<CartState> {
     });
   }
 
-  checkout({required int shippingAddressId, required int payment}) async {
+  /// Clear the local cart state immediately (useful for optimistic UI updates
+  /// after a successful payment so the cart appears empty while the backend
+  /// is being reconciled).
+  void clearLocalCart() {
+    if (isClosed) return;
+    emit(SuccessGettingCarts([]));
+  }
+
+  Future<void> checkout({required int shippingAddressId, required int payment}) async {
     List<CartItemModel> currentItems = [];
     if (state is SuccessGettingCarts) {
       currentItems = (state as SuccessGettingCarts).cartItems;
@@ -78,17 +89,68 @@ class CartCubit extends Cubit<CartState> {
       currentItems = (state as Checkout).cartItems;
     }
     emit(Checkout(currentItems));
+    emit(CheckoutLoading());
+
     final res = await _cartRepo.checkout(
       shippingAddressId: shippingAddressId,
-      payment: payment
+      payment: payment,
     );
-     
-      
+
     if (isClosed) return;
-    res.fold((error) {
-      emit(ErrorCheckout(error));
-    }, (successMessage) {
-      emit(SuccessCheckout(successMessage));
-    }); 
+
+    await res.fold<Future<void>>(
+      (error) async {
+        emit(ErrorCheckout(error));
+      },
+      (checkoutResponse) async {
+        emit(CheckoutSuccess('Checkout initialized'));
+        emit(InitializingPaymentSheet());
+
+        try {
+          await _stripeService.initializePaymentSheet(
+            clientSecret: checkoutResponse.clientSecret,
+            merchantDisplayName: 'E-Commerce App',
+          );
+
+          emit(PresentingPaymentSheet());
+          await _stripeService.presentPaymentSheet();
+
+          emit(WaitingForPaymentConfirmation());
+          final paymentResult = await _waitForPaymentCompletion(checkoutResponse.orderId);
+
+          if (paymentResult) {
+            emit(PaymentCompleted());
+          } else {
+            emit(PaymentTimeout());
+          }
+        } catch (e) {
+          if (e.toString().contains('cancel')) {
+            emit(PaymentCancelled());
+          } else {
+            emit(PaymentFailed(e.toString()));
+          }
+        }
+      },
+    );
+  }
+
+  Future<bool> _waitForPaymentCompletion(int orderId) async {
+    const maxAttempts = 30;
+    for (var attempt = 0; attempt < maxAttempts; attempt++) {
+      final statusResult = await _cartRepo.getOrderStatus(orderId);
+      if (statusResult.isRight()) {
+        final status = statusResult.getOrElse(() => '');
+        final normalized = status.trim().toLowerCase();
+        // Log for debugging
+        log('Order $orderId status check (#${attempt + 1}): "$status"');
+        if (normalized == 'paid' || normalized.contains('paid')) {
+          return true;
+        }
+      }
+      if (attempt < maxAttempts - 1) {
+        await Future.delayed(const Duration(seconds: 1));
+      }
+    }
+    return false;
   }
 }

@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../home/widgets/title_price_widget.dart' show TitlePriceWidget, TotalPriceWidget;
+import '../home/widgets/title_price_widget.dart' show TotalPriceWidget;
 
 class MyCartScreen extends StatefulWidget {
   const MyCartScreen({super.key});
@@ -45,12 +45,34 @@ class _MyCartScreenState extends State<MyCartScreen> {
       ),
       body: BlocListener<CartCubit, CartState>(
         listener: (context, state) {
-          if (state is SuccessCheckout) {
+          if (state is CheckoutSuccess) {
             AnimatedSnackBar.material(
-              "Order Created Successfully!",
+              "Checkout initialized. Complete payment to confirm your order.",
               type: AnimatedSnackBarType.success,
             ).show(context);
-          // Refresh cart after successful checkout
+          } else if (state is PaymentCompleted) {
+            AnimatedSnackBar.material(
+              "Payment completed. Your order is now being confirmed.",
+              type: AnimatedSnackBarType.success,
+            ).show(context);
+          
+            context.read<CartCubit>().clearLocalCart();
+            context.read<CartCubit>().fetchCarts();
+          } else if (state is PaymentCancelled) {
+            AnimatedSnackBar.material(
+              "Payment cancelled.",
+              type: AnimatedSnackBarType.info,
+            ).show(context);
+          } else if (state is PaymentFailed) {
+            AnimatedSnackBar.material(
+              state.message,
+              type: AnimatedSnackBarType.error,
+            ).show(context);
+          } else if (state is PaymentTimeout) {
+            AnimatedSnackBar.material(
+              "Payment confirmation timed out. Please check your order status.",
+              type: AnimatedSnackBarType.warning,
+            ).show(context);
           } else if (state is ErrorCheckout) {
             AnimatedSnackBar.material(
               state.message,
@@ -78,7 +100,7 @@ class _MyCartScreenState extends State<MyCartScreen> {
               );
             }
 
-            // Calculate total price dynamically
+           
             double totalPrice = state.cartItems.fold(
                 0, (sum, item) => sum + ((item.price ?? 0) * (item.quantity ?? 1)));
 
@@ -113,7 +135,10 @@ class _MyCartScreenState extends State<MyCartScreen> {
                           title: "Total",
                           price: "\$${totalPrice.toStringAsFixed(2)}"),
                       const HeightSpace(20),
-                      state is Checkout
+                      state is CheckoutLoading ||
+                              state is InitializingPaymentSheet ||
+                              state is PresentingPaymentSheet ||
+                              state is WaitingForPaymentConfirmation
                           ? const Center(child: CircularProgressIndicator())
                           : PrimayButtonWidget(
                               buttonText: "Checkout",
@@ -137,6 +162,7 @@ class _MyCartScreenState extends State<MyCartScreen> {
             );
           }
 
+
           if (state is ErrorGettingCarts) {
             return Center(
               child: Padding(
@@ -150,10 +176,9 @@ class _MyCartScreenState extends State<MyCartScreen> {
             );
           }
           return Center(
-            child: Text(
-              'Your cart is empty.',
-              style: AppStyles.black16w500Style,
-            ),
+            child:Icon(
+              Icons.card_travel,
+              )
           );
         },
         )

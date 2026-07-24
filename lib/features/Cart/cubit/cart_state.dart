@@ -33,10 +33,30 @@ class Checkout extends CartState {
   final List<CartItemModel> cartItems;
   Checkout(this.cartItems);
 }
-class SuccessCheckout extends CartState {
+
+class CheckoutLoading extends CartState {}
+
+class CheckoutSuccess extends CartState {
   final String message;
-  SuccessCheckout(this.message);
+  CheckoutSuccess(this.message);
 }
+
+class InitializingPaymentSheet extends CartState {}
+
+class PresentingPaymentSheet extends CartState {}
+
+class WaitingForPaymentConfirmation extends CartState {}
+
+class PaymentCompleted extends CartState {}
+
+class PaymentCancelled extends CartState {}
+
+class PaymentFailed extends CartState {
+  final String message;
+  PaymentFailed(this.message);
+}
+
+class PaymentTimeout extends CartState {}
 
 class ErrorCheckout extends CartState {
   final String message;

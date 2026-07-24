@@ -1,5 +1,11 @@
 # e_commerce_app
 
+## Stripe setup
+
+Set the Stripe publishable key before running the app:
+
+- Android/iOS: `flutter run --dart-define=STRIPE_PUBLISHABLE_KEY=your_publishable_key`
+
 A new Flutter project.
 
 ## Getting Started

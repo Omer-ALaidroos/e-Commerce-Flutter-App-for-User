@@ -1,9 +1,11 @@
 
 
+import 'package:e_commerce_app/features/order/models/order_status.dart';
+
 class OrderModel {
   final int id;
   final double totalAmount;
-  final String status;
+  final OrderStatus status;
   final DateTime orderDate;
   final ShippingAddress shippingAddress;
   final List<OrderItem> items;
@@ -19,7 +21,7 @@ class OrderModel {
     return OrderModel(
       id: json['id'] ?? 0,
       totalAmount: (json['totalAmount'] ?? 0.0).toDouble(),
-      status: json['status'] ?? 'Unknown',
+      status: OrderStatus.fromJson(json['status'] ?? json['Status']),
       orderDate: DateTime.tryParse(json['orderDate'] ?? '') ?? DateTime.now(),
       shippingAddress: ShippingAddress.fromJson(json['shippingAddress'] ?? {}),
       items: (json['items'] as List<dynamic>? ?? []).map((item) => OrderItem.fromJson(item)).toList(),
@@ -71,13 +73,13 @@ class ProductOrder {
   final String name;
   final String description;
   final double price;
-  final String imageUrl;
+  final String primaryImageUrl;
   ProductOrder({
     required this.id,
     required this.name,
     required this.description,
     required this.price,
-    required this.imageUrl,
+    required this.primaryImageUrl,
   });
   factory ProductOrder.fromJson(Map<String, dynamic> json) {
     return ProductOrder(
@@ -85,7 +87,7 @@ class ProductOrder {
       name: json['name'] ?? '',
       description: json['description'] ?? '',
       price: (json['price'] ?? 0.0).toDouble(),
-      imageUrl: json['imageUrl'] ?? '',
+      primaryImageUrl: json['primaryImageUrl'] ?? '',
     );
   }
 }

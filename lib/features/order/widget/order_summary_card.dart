@@ -1,5 +1,6 @@
 import 'package:e_commerce_app/core/routing/app_routes.dart';
 import 'package:e_commerce_app/features/order/models/order_summary_model.dart';
+import 'package:e_commerce_app/features/order/models/order_status.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -58,8 +59,8 @@ class OrderSummaryCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildInfoColumn('Status', order.status,
-                    color: _getStatusColor(order.status)),
+                _buildInfoColumn('Status', order.status.displayName(),
+                  color: _getStatusColor(order.status)),
                 _buildInfoColumn(
                     'Total Price', '\$${order.totalPrice.toStringAsFixed(2)}',
                     isBold: true),
@@ -96,16 +97,20 @@ class OrderSummaryCard extends StatelessWidget {
     );
   }
 
-  Color _getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'pending':
+  Color _getStatusColor(OrderStatus status) {
+    switch (status) {
+      case OrderStatus.PendingPayment:
         return Colors.orange;
-      case 'completed':
+      case OrderStatus.Paid:
+      case OrderStatus.Delivered:
         return Colors.green;
-      case 'cancelled':
+      case OrderStatus.Cancelled:
+      case OrderStatus.PaymentFailed:
         return Colors.red;
-      case 'shipped':
+      case OrderStatus.Shipped:
         return Colors.blue;
+      case OrderStatus.Processing:
+        return Colors.orangeAccent;
       default:
         return Colors.grey;
     }

@@ -4,9 +4,26 @@ import 'package:e_commerce_app/core/styling/theme_data.dart';
 import 'package:e_commerce_app/core/utils/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); 
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+/*  const publishableKey = String.fromEnvironment(
+    'STRIPE_PUBLISHABLE_KEY',
+    defaultValue: '',
+  );*/
+  const publishableKey ='pk_test_51TwHoqCpskN5G4YTnBTMDEv3HK58UFEBHaMXuhHtW59TZOfWt8WcNX9pZPK7JexYtlD7W6c72GE9mP6y1JAA7whj00PfKQgPTX';
+
+  if (publishableKey.isEmpty) {
+    debugPrint(
+      'Stripe publishable key is missing. Start the app with --dart-define=STRIPE_PUBLISHABLE_KEY=your_key',
+    );
+  } else {
+    debugPrint('Stripe publishable key: $publishableKey');
+    Stripe.publishableKey = publishableKey;
+    await Stripe.instance.applySettings();
+  }
 
   setupServiceLocator();
   runApp(const MyApp());

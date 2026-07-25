@@ -37,5 +37,5 @@ class ApiEndpoints {
   static const String removeFavorite = "/api/Product/RemoveFromFavorite";
   static const String myFavorites = "/api/Product/MyFavorites";
 
-
+  static const String getPaymentIntent = "/api/Payment/pay-order";
 }

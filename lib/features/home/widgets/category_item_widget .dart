@@ -2,7 +2,6 @@ import 'package:e_commerce_app/core/styling/app_colors.dart';
 import 'package:e_commerce_app/core/styling/app_styles.dart';
 import 'package:e_commerce_app/core/widgets/spacing_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CategoryItemWidget extends StatelessWidget {
@@ -21,25 +20,32 @@ class CategoryItemWidget extends StatelessWidget {
     return InkWell(
       onTap: onPress ?? () {},
       child: Padding(
-        padding: EdgeInsetsDirectional.only(end: 8.w),
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 7.h),
+        padding: EdgeInsetsDirectional.only(end: 12.w, bottom: 8.h, top: 4.h),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.primaryColor : Colors.transparent,
-            border: isSelected
-                ? null
-                : Border.all(color: Colors.grey, width: 0.5),
-            borderRadius: BorderRadius.circular(8.r),
+            color: isSelected ? AppColors.primaryColor : AppColors.whiteColor,
+            borderRadius: BorderRadius.circular(16.r),
+            boxShadow: [
+              BoxShadow(
+                color: isSelected
+                    ? AppColors.primaryColor.withOpacity(0.3)
+                    : Colors.black.withOpacity(0.07),
+                blurRadius: isSelected ? 8 : 5,
+                offset: Offset(0, isSelected ? 4 : 2),
+              ),
+            ],
           ),
           child: Row(
             children: [
               Icon(
                 _iconFromCategoryTitle(categoryName),
                 size: 18.sp,
-                color: isSelected
-                    ? AppColors.whiteColor
-                    : AppColors.primaryColor,
+                color:
+                    isSelected ? AppColors.whiteColor : AppColors.primaryColor,
               ),
               const WidthSpace(8),
               Text(

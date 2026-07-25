@@ -32,76 +32,196 @@ class ProductItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12.r),
-                child: CachedNetworkImage(
-                  imageUrl: "${ApiEndpoints.baseUrl}/$image",
-                  width: 164.w,
-                  height: 150.h,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    color: Colors.grey[200],
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    color: Colors.grey[200],
-                    child: const Icon(
-                      Icons.error,
-                      color: Colors.red,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 8.h,
-                right: 8.w,
-                child: GestureDetector(
-                  onTap: onFavoriteToggle,
-                  child: CircleAvatar(
-                    radius: 15.r,
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      isFavorite ? Icons.favorite : Icons.favorite_border,
-                      color: isFavorite ? Colors.red : Colors.grey,
-                      size: 20.sp,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+      child: Container(
+        width: 164.w,
+        decoration: BoxDecoration(
+          color: AppColors.whiteColor,
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(
+            color: AppColors.primaryColor.withOpacity(0.08),
+            width: 1,
           ),
-          const HeightSpace(8),
-          SizedBox(
-            width: 164.w,
-            child: Text(
-              title,
-              style: AppStyles.black15BoldStyle,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.blackColor.withOpacity(0.08),
+              blurRadius: 16,
+              offset: const Offset(0, 8),
             ),
-          ),
-          const HeightSpace(4),
-          Row(
-            children: [
-              Icon(
-                Icons.star,
-                color: Colors.amber,
-                size: 16.sp,
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(20.r)),
+                  child: CachedNetworkImage(
+                    imageUrl: "${ApiEndpoints.baseUrl}/$image",
+                    width: 164.w,
+                    height: 132.h,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      color: Colors.grey[200],
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      color: Colors.grey[200],
+                      child: const Icon(
+                        Icons.error,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned.fill(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(20.r)),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withOpacity(0.06),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 8.h,
+                  left: 8.w,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                    decoration: BoxDecoration(
+                      color: AppColors.whiteColor.withOpacity(0.95),
+                      borderRadius: BorderRadius.circular(999.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.blackColor.withOpacity(0.08),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.local_fire_department_rounded,
+                          size: 12.sp,
+                          color: AppColors.primaryColor,
+                        ),
+                        const WidthSpace(4),
+                        Text(
+                          'New',
+                          style: AppStyles.black15BoldStyle.copyWith(
+                            fontSize: 11.sp,
+                            color: AppColors.primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 8.h,
+                  right: 8.w,
+                  child: GestureDetector(
+                    onTap: onFavoriteToggle,
+                    child: Container(
+                      padding: EdgeInsets.all(6.w),
+                      decoration: BoxDecoration(
+                        color: AppColors.whiteColor.withOpacity(0.95),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.blackColor.withOpacity(0.08),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: isFavorite ? Colors.red : AppColors.greyColor,
+                        size: 18.sp,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(10.w, 10.h, 10.w, 12.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: AppStyles.black15BoldStyle.copyWith(
+                      fontSize: 14.sp,
+                      color: AppColors.blackColor,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const HeightSpace(20),
+                  Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8.w,
+                          vertical: 4.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.amber.withOpacity(0.16),
+                          borderRadius: BorderRadius.circular(999.r),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.star_rounded,
+                              color: Colors.amber,
+                              size: 14.sp,
+                            ),
+                            const WidthSpace(4),
+                            Text(
+                              averageRating.toStringAsFixed(1),
+                              style: AppStyles.black15BoldStyle.copyWith(
+                                fontSize: 12.sp,
+                                color: AppColors.blackColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Spacer(),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10.w,
+                          vertical: 6.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryColor,
+                          borderRadius: BorderRadius.circular(999.r),
+                        ),
+                        child: Text(
+                          "\$ $price",
+                          style: AppStyles.black15BoldStyle.copyWith(
+                            fontSize: 12.sp,
+                            color: AppColors.whiteColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              const WidthSpace(4),
-              Text(averageRating.toStringAsFixed(1),
-                  style: AppStyles.black15BoldStyle.copyWith(fontSize: 14.sp)),
-            ],
-          ),
-          Text(
-            "\$ $price",
-            style: AppStyles.black15BoldStyle,
-          ),
-        ],
+            )
+          ],
+        ),
       ),
     );
   }

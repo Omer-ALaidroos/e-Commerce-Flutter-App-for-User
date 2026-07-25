@@ -93,9 +93,10 @@ class _MyCartScreenState extends State<MyCartScreen> {
             
             if (state.cartItems.isEmpty) {
               return Center(
-                child: Text(
-                  'Your cart is empty.',
-                  style: AppStyles.black16w500Style,
+                child: Image.asset( 
+                  'assets/icons/cart.png',
+                  width: 200.w,
+                  height: 200.h,
                 ),
               );
             }
@@ -177,7 +178,9 @@ class _MyCartScreenState extends State<MyCartScreen> {
           }
           return Center(
             child:Icon(
-              Icons.card_travel,
+              Icons.error_outline_rounded,
+              color: Colors.red,
+              size: 100.sp,
               )
           );
         },

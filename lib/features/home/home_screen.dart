@@ -1,8 +1,9 @@
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:e_commerce_app/core/routing/app_routes.dart';
 import 'package:e_commerce_app/core/styling/app_colors.dart';
-import 'package:e_commerce_app/core/styling/app_styles.dart';
 import 'package:e_commerce_app/core/utils/service_locator.dart';
+import 'package:e_commerce_app/features/Cart/cubit/cart_cubit.dart';
+import 'package:e_commerce_app/features/Cart/cubit/cart_state.dart';
 import 'package:e_commerce_app/core/widgets/custom_text_field.dart';
 import 'package:e_commerce_app/core/widgets/spacing_widgets.dart';
 import 'package:e_commerce_app/features/home/cubit/categories_cubit.dart';
@@ -15,7 +16,6 @@ import 'package:e_commerce_app/features/home/models/products_model.dart';
 import 'package:e_commerce_app/features/home/widgets/category_item_widget%20.dart';
 import 'package:e_commerce_app/features/home/widgets/product_item_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -76,40 +76,111 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const HeightSpace(28),
-              SizedBox(
-                width: 335.w,
-                child: Text(
-                  "Discover",
-                  style: AppStyles.primaryHeadLinesStyle,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Find Your Style",
+                        style: TextStyle(
+                          fontSize: 28.sp,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.blackColor,
+                        ),
+                      ),
+                      const HeightSpace(4),
+                      Text(
+                        "Discover the latest trends.",
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(children: [
+                     const CircleAvatar(child: Icon(Icons.notifications_none)),
+                     const WidthSpace(8),
+                      GestureDetector(
+                        onTap: () {
+                          GoRouter.of(context).push(AppRoutes.myCartScreen);
+                        },
+                        child: BlocBuilder<CartCubit, CartState>(
+                          builder: (context, state) {
+                            int itemCount = 0;
+                            if (state is SuccessGettingCarts) {
+                              itemCount = state.cartItems.length;
+                            }
+                            return Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                const CircleAvatar(
+                                    child: Icon(Icons.shopping_cart_outlined)),
+                                if (itemCount > 0)
+                                  Positioned(
+                                    top: -4,
+                                    right: -4,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                            color: Colors.white, width: 1),
+                                      ),
+                                      constraints: BoxConstraints(
+                                        minWidth: 18.r,
+                                        minHeight: 18.r,
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          itemCount.toString(),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 10.sp,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ],)
+                ]
               ),
               const HeightSpace(16),
-              Row(
-                children: [
-                  CustomTextField(
-                    width: 270.w,
-                    hintText: "Search For Clothes",
-                    controller: _searchController,
-                    onSubmitted: (_) => _triggerSearch(),
-                    onChanged: (_) {},
+              TextField(
+                controller: _searchController,
+                onSubmitted: (_) => _triggerSearch(),
+                decoration: InputDecoration(
+                  hintText: "Search for products...",
+                  hintStyle: TextStyle(color: Colors.grey[500]),
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16.r),
+                    borderSide: BorderSide.none,
                   ),
-                  const WidthSpace(8),
-                  GestureDetector(
-                    onTap: _triggerSearch,
-                    child: Container(
-                      width: 56.w,
-                      height: 56.h,
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryColor,
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                      child: const Icon(
-                        Icons.search,
-                        color: Colors.white,
-                      ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16.r),
+                    borderSide: BorderSide(color: AppColors.primaryColor, width: 1.5),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 20.w),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      Icons.search_rounded,
+                      color: AppColors.primaryColor,
+                      size: 26.sp,
                     ),
-                  )
-                ],
+                    onPressed: _triggerSearch,
+                    splashRadius: 24.r,
+                  ),
+                ),
               ),
               const HeightSpace(16),
               BlocBuilder<CategoriesCubit, CategoriesState>(
@@ -141,6 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   return SizedBox.shrink();
                 },
               ),
+           
               const HeightSpace(16),
               BlocBuilder<ProductCubit, ProductState>(
                 builder: (context, state) {

@@ -85,11 +85,7 @@ class RouterGenerationConfig {
         child: const AddressScreen(),
       ),
     ),
-      GoRoute(
-        name: AppRoutes.myCartScreen,
-        path: AppRoutes.myCartScreen,
-        builder: (context, state) => MyCartScreen(),
-      ),
+     
       GoRoute(
         name: AppRoutes.favoritesScreen,
         path: AppRoutes.favoritesScreen,
@@ -166,6 +162,14 @@ class RouterGenerationConfig {
             path: AppRoutes.helpCenterScreen,
             builder: (context, state) => const HelpCenterScreen(),
           ),
+           GoRoute(
+          name: AppRoutes.myCartScreen,   
+          path: AppRoutes.myCartScreen,
+          builder: (context, state) => BlocProvider(
+            create: (context) => CartCubit(sl()),
+            child: const MyCartScreen(),
+          ),
+                        ),
         
 
   ]);

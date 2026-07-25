@@ -88,6 +88,7 @@ import 'package:e_commerce_app/core/utils/service_locator.dart';
 import 'package:e_commerce_app/core/utils/storage_helper.dart';
 import 'package:e_commerce_app/features/order/models/order_model.dart';
 import 'package:e_commerce_app/features/order/models/order_summary_model.dart';
+import 'package:e_commerce_app/features/Cart/models/checkout_response_model.dart';
 
 class OrderRepo {
   final DioHelper _dioHelper;
@@ -129,6 +130,35 @@ class OrderRepo {
         return Right(order);
       } else {
         return Left("Something went wrong");
+      }
+    } catch (e) {
+      return Left(e.toString());
+    }
+  }
+
+  Future<Either<String, CheckoutResponseModel>> payOrder({
+    required int orderId,
+    String currency = 'usd',
+    String? description,
+  }) async {
+    try {
+      final response = await _dioHelper.postRequest(
+        endPoint: ApiEndpoints.getPaymentIntent,
+        data: {
+          'orderId': orderId,
+          'currency': currency,
+          'description': description ?? '',
+        },
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        final checkoutResponse = CheckoutResponseModel.fromJson(response.data);
+        if (checkoutResponse.clientSecret.isEmpty) {
+          return const Left('Invalid payment response from backend.');
+        }
+        return Right(checkoutResponse);
+      } else {
+        return Left('Error: ${response.statusMessage ?? 'Unknown error'}');
       }
     } catch (e) {
       return Left(e.toString());

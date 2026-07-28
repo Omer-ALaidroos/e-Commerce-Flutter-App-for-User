@@ -1,7 +1,10 @@
 
+import 'dart:developer';
+
 import 'package:e_commerce_app/core/routing/router_generation_config.dart';
 import 'package:e_commerce_app/core/styling/theme_data.dart';
 import 'package:e_commerce_app/core/utils/service_locator.dart';
+import 'package:e_commerce_app/core/utils/storage_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -35,7 +38,7 @@ class MyApp extends StatelessWidget {
  
   @override
   Widget build(BuildContext context) {
-    
+     
     return ScreenUtilInit(
       designSize: const Size(390, 844),
       builder: (context, child) {

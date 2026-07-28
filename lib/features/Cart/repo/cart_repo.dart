@@ -124,16 +124,15 @@ class CartRepo {
     }
   }
   Future<Either<String, CheckoutResponseModel>> checkout({
-    required int shippingAddressId,
+   
     required int payment,
   }) async {
     try {
-      log("Initiating checkout with shippingAddressId: $shippingAddressId and paymentMethodId: $payment");
-
+      
       final response = await _dioHelper.postRequest(
         endPoint: ApiEndpoints.checkout,
         data: {
-          "shippingAddressId": shippingAddressId,
+       
           "paymentMethodId": payment,
         },
       );

@@ -81,7 +81,7 @@ class CartCubit extends Cubit<CartState> {
     emit(SuccessGettingCarts([]));
   }
 
-  Future<void> checkout({required int shippingAddressId, required int payment}) async {
+  Future<void> checkout({required int payment}) async {
     List<CartItemModel> currentItems = [];
     if (state is SuccessGettingCarts) {
       currentItems = (state as SuccessGettingCarts).cartItems;
@@ -92,7 +92,7 @@ class CartCubit extends Cubit<CartState> {
     emit(CheckoutLoading());
 
     final res = await _cartRepo.checkout(
-      shippingAddressId: shippingAddressId,
+      
       payment: payment,
     );
 

@@ -73,7 +73,7 @@ class AuthRepo {
         );
 
         if (loginResponseModel.token != null) {
-          log("Login Success: ${loginResponseModel.token}");
+          
 
           await sl<StorageHelper>().saveToken(loginResponseModel.token!);
           if (loginResponseModel.userId != null) {
@@ -81,6 +81,7 @@ class AuthRepo {
               loginResponseModel.userId!,
             );
           }
+         
           if (loginResponseModel.refreshToken != null) {
             await sl<StorageHelper>().saveRefreshToken(
               loginResponseModel.refreshToken!,

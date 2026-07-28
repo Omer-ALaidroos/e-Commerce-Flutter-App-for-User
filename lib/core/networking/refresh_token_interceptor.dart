@@ -21,6 +21,7 @@ class RefreshTokenInterceptor extends Interceptor {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     // Automatically inject the Bearer token into headers if it exists.
     final token = await sl<StorageHelper>().getToken();
+   
     if (token != null && token.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $token';
     }
@@ -36,14 +37,17 @@ class RefreshTokenInterceptor extends Interceptor {
     if (is401 && !isRefreshPath) {
       final storageHelper = sl<StorageHelper>();
       final refreshToken = await storageHelper.getRefreshToken();
-
+     log('refresh token: $refreshToken');
       if (refreshToken != null && refreshToken.trim().isNotEmpty) {
         if (_isRefreshing) {
           // If a refresh is already in progress, wait for it to complete
           log("Refresh already in progress, waiting for new token...");
           final newAccessToken = await _refreshTokenCompleter?.future;
           if (newAccessToken != null) {
-            return handler.resolve(await _dio.fetch(err.requestOptions));
+            // Create new options with the new token to avoid using stale headers
+            final newOptions = Options(headers: {'Authorization': 'Bearer $newAccessToken'});
+            final newRequestOptions = err.requestOptions.copyWith(headers: newOptions.headers);
+            // Retry the original request with the new token            return handler.resolve(await _dio.fetch(newRequestOptions));
           }
         }
 
@@ -78,7 +82,11 @@ class RefreshTokenInterceptor extends Interceptor {
               }
               
               _refreshTokenCompleter?.complete(loginResponse.token);
-              return handler.resolve(await _dio.fetch(err.requestOptions));
+              // Retry the original request with the newly obtained token
+              final newOptions = Options(headers: {'Authorization': 'Bearer ${loginResponse.token}'});
+              final newRequestOptions = err.requestOptions.copyWith(headers: newOptions.headers);
+
+              return handler.resolve(await _dio.fetch(newRequestOptions));
             }
           }
           

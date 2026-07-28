@@ -151,7 +151,7 @@ class _MyCartScreenState extends State<MyCartScreen> {
                               onPress: () {
                                 // Creating order with placeholder values for now
                                 context.read<CartCubit>().checkout(
-                                      shippingAddressId: 2,
+                                      
                                       payment: 1,
                                     );
                               },

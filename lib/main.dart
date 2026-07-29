@@ -11,11 +11,10 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-/*  const publishableKey = String.fromEnvironment(
+  const publishableKey = String.fromEnvironment(
     'STRIPE_PUBLISHABLE_KEY',
     defaultValue: '',
-  );*/
-  const publishableKey ='pk_test_51TwHoqCpskN5G4YTnBTMDEv3HK58UFEBHaMXuhHtW59TZOfWt8WcNX9pZPK7JexYtlD7W6c72GE9mP6y1JAA7whj00PfKQgPTX';
+  );
 
   if (publishableKey.isEmpty) {
     debugPrint(

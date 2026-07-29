@@ -1,5 +1,4 @@
 
-import 'dart:developer';
 
 import 'package:e_commerce_app/core/routing/router_generation_config.dart';
 import 'package:e_commerce_app/core/styling/theme_data.dart';
@@ -27,7 +26,7 @@ Future<void> main() async {
     Stripe.publishableKey = publishableKey;
     await Stripe.instance.applySettings();
   }
-
+  StorageHelper().removeOnboardingCompleted();
   setupServiceLocator();
   runApp(const MyApp());
 }

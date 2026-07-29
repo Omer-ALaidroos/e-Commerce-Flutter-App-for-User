@@ -36,6 +36,8 @@ class _ForgetPasswordOTPScreenState extends State<ForgetPasswordOTPScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Verify OTP'),
+        backgroundColor: Colors.white,
+        centerTitle: true,
       ),
       body: BlocConsumer<ForgetPasswordCubit, ForgetPasswordState>(
         listener: (context, state) {

@@ -25,5 +25,16 @@ class StorageHelper {
   Future clear() async {
     await storage.deleteAll();
   }
-  
+   Future setOnboardingCompleted() async {
+    await storage.write(key: 'onboardingCompleted', value: 'true');
+  }
+   
+   Future removeOnboardingCompleted() async {
+    await storage.delete(key: 'onboardingCompleted');
+  }
+
+  Future<bool> isOnboardingCompleted() async {
+    final value = await storage.read(key: 'onboardingCompleted');
+    return value == 'true';
+  }
 }

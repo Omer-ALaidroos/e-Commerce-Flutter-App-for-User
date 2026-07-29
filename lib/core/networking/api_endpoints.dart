@@ -1,5 +1,5 @@
 class ApiEndpoints {
-  static const String baseUrl = "http://10.0.2.2:5214";
+ static const String baseUrl = "http://";
   static const String allCategories = "/api/Category/All";
  static const String allProducts = "/api/Product/Available";
   static const String searchProducts = "/api/Product/search";

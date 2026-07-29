@@ -31,6 +31,9 @@ class FavoritesScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text('Favorites', style: AppStyles.primaryHeadLinesStyle),
           centerTitle: true,
+          backgroundColor: Colors.white,
+          elevation: 0,
+          foregroundColor: Colors.black,
         ),
         body: Padding(
           padding: EdgeInsets.only(top: 32.h, left: 16.w, right: 16.w, bottom: 16.h),

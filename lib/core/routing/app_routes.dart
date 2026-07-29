@@ -15,5 +15,6 @@ class AppRoutes {
   static const String faqScreen = '/faqScreen';
   static const String helpCenterScreen = '/helpCenterScreen';
   static const String favoritesScreen = '/favoritesScreen';
-
+  static const String splashScreen = '/';
+  static const String onboardingScreen = '/onboardingScreen';
 }

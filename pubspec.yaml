@@ -53,6 +53,15 @@ dependencies:
   dots_indicator: ^4.0.1
   flutter_stripe: ^13.0.0
   salomon_bottom_bar: ^3.0.0
+  flutter_svg: ^2.0.10+1
+  flutter_launcher_icons: ^0.14.4
+  rename_app: ^1.6.6
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/logo.png"
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

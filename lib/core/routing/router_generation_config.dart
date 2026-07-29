@@ -21,6 +21,7 @@ import 'package:e_commerce_app/features/auth/cubit/register/register_cubit.dart'
 import 'package:e_commerce_app/features/auth/cubit/auth/auth_cubit.dart';
 import 'package:e_commerce_app/features/auth/login_screen.dart';
 import 'package:e_commerce_app/features/auth/register_screen.dart';
+import 'package:e_commerce_app/features/onboarding/onboarding_screen.dart';
 import 'package:e_commerce_app/features/order/cubit/order_cubit.dart';
 import 'package:e_commerce_app/features/order/cubit/order_details_cubit.dart';
 import 'package:e_commerce_app/features/home/models/products_model.dart';
@@ -30,19 +31,30 @@ import 'package:e_commerce_app/features/order/order_detailes_screen.dart';
 import 'package:e_commerce_app/features/main%20screen/main_screen.dart';
 import 'package:e_commerce_app/features/forgetPassword/forget_password_email_screen.dart';
 import 'package:e_commerce_app/features/forgetPassword/forget_password_otp_screen.dart';
+import 'package:e_commerce_app/features/splash/splash_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
 class RouterGenerationConfig {
-  static GoRouter goRouter =
-      GoRouter(initialLocation: AppRoutes.loginScreen, routes: [
+  static GoRouter goRouter = GoRouter(
+    initialLocation: AppRoutes.splashScreen,
+    routes: [
+     
+      // Onboarding Screen
       GoRoute(
-      name: AppRoutes.loginScreen,
-      path: AppRoutes.loginScreen,
-      builder: (context, state) => BlocProvider(
-        create: (context) => AuthCubit(sl()),
-        child: const LoginScreen(),
+        name: AppRoutes.onboardingScreen,
+        path: AppRoutes.onboardingScreen,
+        builder: (context, state) => const OnboardingScreen(),
       ),
-    ),
+      // Login
+      GoRoute(
+        name: AppRoutes.loginScreen,
+        path: AppRoutes.loginScreen,
+        builder: (context, state) => BlocProvider(
+          create: (context) => AuthCubit(sl()),
+          child: const LoginScreen(),
+        ),
+      ),
     GoRoute(
       name: AppRoutes.registerScreen,
       path: AppRoutes.registerScreen,
@@ -170,6 +182,13 @@ class RouterGenerationConfig {
             child: const MyCartScreen(),
           ),
                         ),
+         GoRoute(
+          name: AppRoutes.splashScreen,
+          path: AppRoutes.splashScreen,
+          builder: (context, state) => const SplashScreen(),
+         ),
+         
+        
         
 
   ]);

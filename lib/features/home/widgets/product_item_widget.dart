@@ -159,12 +159,14 @@ class ProductItemWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
+                     
+
                     title,
                     style: AppStyles.black15BoldStyle.copyWith(
                       fontSize: 14.sp,
                       color: AppColors.blackColor,
                     ),
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const HeightSpace(20),

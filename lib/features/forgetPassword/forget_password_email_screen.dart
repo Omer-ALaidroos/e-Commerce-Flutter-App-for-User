@@ -32,6 +32,8 @@ class _ForgetPasswordEmailScreenState extends State<ForgetPasswordEmailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Forgot Password'),
+        backgroundColor: Colors.white,
+        centerTitle: true,
       ),
       body: BlocConsumer<ForgetPasswordCubit, ForgetPasswordState>(
         listener: (context, state) {

@@ -42,6 +42,8 @@ class _ForgetPasswordNewPasswordScreenState extends State<ForgetPasswordNewPassw
     return Scaffold(
       appBar: AppBar(
         title: const Text('Set New Password'),
+        backgroundColor: Colors.white,
+        centerTitle: true,
       ),
       body: BlocConsumer<ForgetPasswordCubit, ForgetPasswordState>(
         listener: (context, state) {

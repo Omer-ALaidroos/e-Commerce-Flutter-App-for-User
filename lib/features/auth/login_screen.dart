@@ -160,9 +160,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             child: Center(
                               child: Image.asset(
-                                'assets/images/shopping-cart.png',
-                                width: 42.w,
-                                height: 42.w,
+                                'assets/icons/logo.png',
+                                width: 80.w,
+                                height: 80.w,
                               ),
                             ),
                           ),
